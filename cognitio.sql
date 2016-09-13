@@ -5,45 +5,45 @@ cantidad INT(10)
 );
 CREATE TABLE Estudiante (
 rol INT(10) UNSIGNED PRIMARY KEY,
-dv CHAR(1),
-perfil_id INT(10) UNSIGNED,
-nombre CHAR(20),
-apellido1 CHAR(20),
-apellido2 CHAR(20),
-correo CHAR(30),
-foto CHAR(255),
-password CHAR(50),
-paralelo TINYINT,
-test BIT,
+dv CHAR(1) NOT NULL,
+perfil_id INT(10) UNSIGNED NULL,
+nombre CHAR(20) NULL,
+apellido1 CHAR(20) NULL,
+apellido2 CHAR(20) NULL,
+correo CHAR(30) UNIQUE,
+foto CHAR(255) NULL,
+password CHAR(50) NOT NULL,
+paralelo TINYINT NULL,
+test BIT NULL,
 FOREIGN KEY (perfil_id) REFERENCES Perfil(id) ON UPDATE CASCADE
 );
 CREATE TABLE Profesor (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-nombre CHAR(20),
-apellido1 CHAR(20),
-apellido2 CHAR(20),
-correo CHAR(30),
-foto CHAR(255),
-password CHAR(50),
-coordinador BIT,
-suspendido BIT
+nombre CHAR(20) NOT NULL,
+apellido1 CHAR(20) NOT NULL,
+apellido2 CHAR(20) NOT NULL,
+correo CHAR(30) NOT NULL,
+foto CHAR(255) NOT NULL,
+password CHAR(50) NULL,
+coordinador BIT NOT NULL,
+suspendido BIT NOT NULL
 );
 CREATE TABLE Etiqueta (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-nombre_etiqueta CHAR(50)
+nombre_etiqueta CHAR(50) NOT NULL
 );
 CREATE TABLE Unidad (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 profesor_id INT(10) UNSIGNED,
-titulo CHAR(50),
-descripcion CHAR(140),
+titulo CHAR(50) NOT NULL,
+descripcion CHAR(140) NOT NULL,
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE
 );
 CREATE TABLE Topico (
 id_uni INT(10) UNSIGNED,
 id INT(10) UNSIGNED,
-titulo CHAR(50),
-descripcion CHAR(140),
+titulo CHAR(50) NOT NULL,
+descripcion CHAR(140) NOT NULL,
 profesor_id INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id),
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
@@ -53,7 +53,7 @@ CREATE TABLE Contenido (
 id_uni INT(10) UNSIGNED,
 id_top INT(10) UNSIGNED,
 id INT(10) UNSIGNED,
-titulo CHAR(50),
+titulo CHAR(50) NOT NULL,
 info TEXT,
 archivo CHAR(255),
 borrador BIT,

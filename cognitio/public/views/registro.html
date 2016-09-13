@@ -1,0 +1,41 @@
+<div>
+    <form ng-controller="reg" ng-submit="submit()">
+		{{mensaje}}
+		<table>
+			<tr>
+				<td>
+					Correo
+				</td>
+				<td>
+					<input type='text' ng-model='user.correo'>
+					
+				</td>
+				<td>
+					<select ng-model='user.dominio' ng-options='x for x in correos'>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Rol
+				</td>
+				<td colspan='2'>
+					<input type='text' ng-model='user.rol'>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					Contraseña
+				</td>
+				<td colspan='2'>
+					<input type='password' ng-model='user.password'>
+				</td>
+			</tr>
+			<tr>
+				<td colspan='3'>
+					<input type='submit' value='registrar'>
+				</td>
+			</tr>
+		</table>
+    </form>
+</div>
