@@ -1,10 +1,21 @@
 var app = require('express').Router();
+
 app.get('/checklogin', function(req, res) {
 	var sess = req.session;
-	if(sess.correo) {
-		return res.json({exito:true});
+	if(sess.correo && sess.passwd) {
+		return res.json({exito:true,datos:sess});
 	}
 	res.json({exito:false,correos:['@alumnos.usm.cl','@sansano.usm.cl']});
+});
+
+app.get('/logout', function(req,res) {
+	req.session.destroy(function(err) {
+  if(err) {
+    console.log(err);
+  } else {
+    res.redirect('/');
+  }
+});
 });
 
 // route to handle creating goes here (app.post)
@@ -39,31 +50,23 @@ app.post('/signup', function(req,res) {
 app.post('/autenticacion', function(req,res) {
 	var usuario = require('./modelos/usuario');
 	var mail= req.body.correo+req.body.dominio;
-	usuario.ver(mail, req.body.password, function(error, usuario) {
+	usuario.ver(mail, req.body.password, function(error, user) {
 		if(error) {
 			return res.json({exito:false,mensaje:'Algo salio mal'});
 		}
 		
-		if(usuario===false) {
+		if(user===false) {
 			return res.json({exito:false,mensaje:'Usuario o contraseña incorrecto'});
 		}
 		else {
 			var sess = req.session;
-			sess.correo = mail;
+			sess.correo = usuario.encriptar(mail);
+			sess.passwd = user.password;
 			sess.cookie.expires = new Date(Date.now()+86400000);
+			
 			res.json({exito:true});
 		}
 	});
-});
-
-app.get('/logout', function(req,res) {
-	req.session.destroy(function(err) {
-  if(err) {
-    console.log(err);
-  } else {
-    res.redirect('/');
-  }
-});
 });
 
 module.exports = app;

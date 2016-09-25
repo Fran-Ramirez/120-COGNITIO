@@ -5,7 +5,7 @@ module.exports = {
 	'password':'12345',
 	'database':'cognitio',
 	'schema':{
-	'tableName':'sesiones',
+	'tableName':'Sesion',
 	'columnNames':{
 			'session_id':'id',
 			'expires':'fecha',
