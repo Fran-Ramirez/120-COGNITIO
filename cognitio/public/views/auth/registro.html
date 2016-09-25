@@ -1,0 +1,53 @@
+<div ng-controller="reg">
+    <form ng-submit="submit()" name="registro">
+		<md-card>
+			<md-card-title>
+				<md-card-title-text>
+					<span class="md-headline">Registra tu cuenta</span>
+					<span class="md-subhead">{{mensaje}}</span>
+				</md-card-title-text>
+			</md-card-title>
+		<md-card-content>
+			<div layout="row">
+				<md-input-container flex>
+					<label>Correo</label>
+					<input type='text' name="correo" ng-model='user.correo' ng-pattern='/^[a-z]*\.[a-z]*(?:\.[1-9]\d)?$/' required>
+					<div ng-messages="registro.correo.$error">
+						<div ng-message="required">Debes ingresar un correo.</div>
+						<div ng-message="pattern">Ingresa un correo correcto.</div>
+					</div>
+				</md-input-container>
+				
+				<md-input-container>
+					<label hide>@...</label>
+					<md-select ng-model='user.dominio'>
+						<md-option ng-repeat="x in correos" value="{{x}}">
+							{{x}}
+						</md-option>
+					</md-select>
+				</md-input-container>
+			</div>
+			<div layout="row">
+				<md-input-container flex>
+					<label>Rol</label>
+					<input type='text' name='rol' ng-model='user.rol' ng-pattern="/^\d*\-[k|K|\d]$/" required>
+					<div ng-messages="registro.rol.$error">
+						<div ng-message="required">Debes ingresar tu rol.</div>
+						<div ng-message="pattern">Ingresa el rol correcto.</div>
+						<div ng-message="noesRol">Ingresa el rol correcto.</div>
+					</div>
+				</md-input-container>
+			</div>
+			<div layout="row">
+				<md-input-container flex>
+					<label>Contraseña</label>
+					<input type='password' name='pass' ng-model='user.password' required>
+					<div ng-messages="registro.pass.$error">
+						<div ng-message="required">Inventa una contraseña.</div>
+					</div>
+				</md-input-container>
+				<md-button type='submit'>Registrar</md-button>
+			</div>
+		</md-card-content>
+    </form>
+</div>

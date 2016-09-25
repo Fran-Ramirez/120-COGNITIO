@@ -1,7 +1,7 @@
-angular.module('mainApp').controller('controllogin', ['$scope','$rootScope','servicioInicio',function($scope,$rootScope,servicioInicio) {
+angular.module('mainApp').controller('controllogin', ['$scope','$rootScope','$location','servicioInicio',function($scope,$rootScope,$location,servicioInicio) {
 	servicioInicio.get().then(function(res){
 		if(res.data.exito==true) {
-			console.log('bien');
+			$location.url('/main');
 		}
 		else {
 			$scope.correos=res.data.correos;
@@ -23,12 +23,18 @@ angular.module('mainApp').controller('log', ['$scope','$location','servicioInici
 				password:$scope.user.password
 		};
 		servicioInicio.log(datos).then(function(res) {
-			$scope.mensaje=res.data.mensaje;
+			if(res.data.exito == true) {
+				$location.url("/main");
+			}
+			else {
+				$scope.mensaje = res.data.mensaje;
+			}
 		});
 	}
 }]);
 
 angular.module('mainApp').controller('reg', ['$scope','servicioInicio',function($scope,servicioInicio) {
+	
 	$scope.submit = function() {
 		var datos = {
 				correo:$scope.user.correo,

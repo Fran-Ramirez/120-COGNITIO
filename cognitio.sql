@@ -10,11 +10,11 @@ perfil_id INT(10) UNSIGNED NULL,
 nombre CHAR(20) NULL,
 apellido1 CHAR(20) NULL,
 apellido2 CHAR(20) NULL,
-correo CHAR(30) UNIQUE,
+correo CHAR(50) UNIQUE,
 foto CHAR(255) NULL,
 password CHAR(50) NOT NULL,
 paralelo TINYINT NULL,
-test BIT NULL,
+test TINYINT(1) NULL,
 FOREIGN KEY (perfil_id) REFERENCES Perfil(id) ON UPDATE CASCADE
 );
 CREATE TABLE Profesor (
@@ -22,11 +22,11 @@ id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 nombre CHAR(20) NOT NULL,
 apellido1 CHAR(20) NOT NULL,
 apellido2 CHAR(20) NOT NULL,
-correo CHAR(30) NOT NULL,
+correo CHAR(50) NOT NULL,
 foto CHAR(255) NOT NULL,
 password CHAR(50) NULL,
-coordinador BIT NOT NULL,
-suspendido BIT NOT NULL
+coordinador TINYINT(1) NOT NULL,
+suspendido TINYINT(1) NOT NULL
 );
 CREATE TABLE Etiqueta (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -56,7 +56,7 @@ id INT(10) UNSIGNED,
 titulo CHAR(50) NOT NULL,
 info TEXT,
 archivo CHAR(255),
-borrador BIT,
+borrador TINYINT(1),
 etiqueta_id INT(10) UNSIGNED,
 profesor_id INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id_top,id),
@@ -75,7 +75,7 @@ CREATE TABLE Feedback (
 id INT(10) UNSIGNED,
 rol INT(10) UNSIGNED,
 calificacion TINYINT,
-soporte BIT,
+soporte TINYINT(1),
 comentario CHAR(140),
 uni_id INT(10) UNSIGNED,
 top_id INT(10) UNSIGNED,
@@ -83,6 +83,12 @@ com_id INT(10) UNSIGNED,
 PRIMARY KEY(id,rol,uni_id,top_id,com_id),
 FOREIGN KEY (uni_id,top_id,com_id) REFERENCES Contenido(id_uni,id_top,id) ON UPDATE CASCADE,
 FOREIGN KEY (rol) REFERENCES Estudiante(rol) ON UPDATE CASCADE
+);
+CREATE TABLE Sesion (
+id VARCHAR(255) COLLATE utf8_bin NOT NULL,
+fecha INT(11) UNSIGNED NOT NULL,
+datos TEXT,
+PRIMARY KEY (id)
 );
 
 DROP PROCEDURE IF EXISTS Secuencia;
@@ -144,3 +150,8 @@ FOR EACH ROW BEGIN
 SET NEW.id = (SELECT NextVal('seq_feedback'));
 END //
 DELIMITER ;
+
+INSERT INTO Perfil (nombre,cantidad) VALUES ('Adaptador', 0);
+INSERT INTO Perfil (nombre,cantidad) VALUES ('Asimilador', 0);
+INSERT INTO Perfil (nombre,cantidad) VALUES ('Convergente', 0);
+INSERT INTO Perfil (nombre,cantidad) VALUES ('Divergente', 0);

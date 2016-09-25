@@ -1,11 +1,11 @@
 module.exports = function(app) {
 
 	app.get('/checklogin', function(req, res) {
-		console.log(req.headers);
-		if(req.isAuthenticated()) {
+		
+		/*if(req.isAuthenticated()) {
 			console.log("pilos");
 			return res.json({exito:true});
-		}
+		}*/
 		res.json({exito:false,correos:['@alumnos.usm.cl','@sansano.usm.cl']});
 	});
 
@@ -33,15 +33,23 @@ module.exports = function(app) {
 			if(error) {
 				res.json({exito:false,mensaje:'Algo salio mal'});
 			}
-			if(!usuario) {
+			
+			if(usuario===false) {
 				res.json({exito:false,mensaje:'Usuario o contraseña incorrecto'});
 			}
 			else {
 				var config = require('../config/database');
-				var jwt = require('jwt-simple');
-				var token = jwt.encode(usuario, config.secret);
-				console.log(token);
-				res.status(200).json({exito:true,token:'JWT '+token});
+				var jwt = require('jsonwebtoken');
+				//console.log(usuario);
+				/*var token = jwt.sign(usuario, config.secret, {
+					expiresIn: 86400 // expires in 24 hours
+				});
+				console.log(token);*/
+				var token = jwt.sign(usuario, config.secret, {
+					expiresIn: 86400 // expires in 24 hours
+				});
+
+				res.json({exito:true,mensaje:'wina',token:token});
 			}
 		});
 	});
