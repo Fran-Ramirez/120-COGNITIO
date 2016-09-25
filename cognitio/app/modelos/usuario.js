@@ -78,11 +78,25 @@ exports.getTest = function(usuario,pass,callback) {
 			
         }
         else {
-			var query = conexion.query("SELECT test FROM Estudiante WHERE (correo=? AND password=?)", [usuario,pass]);
-			query.on('result', function(row) {
-				conexion.pause();
-				callback(row);
-				conexion.resume();
+			conexion.query("SELECT test FROM Estudiante WHERE (correo=? AND password=?)", [usuario,pass], function(err, rows){
+				if (err) {
+					conexion.release();
+					callback(err,null);
+				}
+				else {
+					if(rows.length > 0) {
+						if(rows[0].test == 0) {
+							callback(null,false);
+						}
+						else {
+							callback(null,true);
+						}
+					}
+					else {
+						conexion.release();
+						callback(null,null);
+					}
+				}
 			});
 		}
 	});
