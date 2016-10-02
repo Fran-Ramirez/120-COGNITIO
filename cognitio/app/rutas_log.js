@@ -28,7 +28,7 @@ app.post('/signup', function(req,res) {
 		var test_rol = new Regex(/^\d*\-[k|K|\d]$/);
 		var test_correo = new Regex(/^[a-z]*\.[a-z]*(?:\.[1-9]\d)?$/);
 		var mail= req.body.correo+req.body.dominio;
-		if(test_correo.test(mail) || test_rol.test(req.body.rol)) {
+		if(!test_correo.test(mail) || !test_rol.test(req.body.rol)) {
 			delete test_rol;
 			delete test_correo;
 			res.json({exito:false,mensaje:'Uno de los campos está incorrecto'});

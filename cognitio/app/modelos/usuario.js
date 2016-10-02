@@ -72,6 +72,33 @@ exports.ver = function(usuario, pass, next) {
 	});
 };
 
+exports.setTest = function(usuario,pass,resultado, callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("UPDATE Estudiante SET perfil_id=?,test=1 WHERE (correo=? AND password=?)", [resultado,usuario,pass], function(err,rows) {
+				if(err) {
+					conexion.release();
+					callback(err,null);
+				}
+				else {
+					var c = Object.keys(rows).length;
+					if(c > 0) {
+						conexion.release();
+						callback(null,true);
+					}
+					else {
+						conexion.release();
+						callback(null,false);
+					}
+				}
+			});
+		}
+	});
+};
+
 exports.getTest = function(usuario,pass,callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
@@ -86,9 +113,11 @@ exports.getTest = function(usuario,pass,callback) {
 				else {
 					if(rows.length > 0) {
 						if(rows[0].test == 0) {
+							conexion.release();
 							callback(null,false);
 						}
 						else {
+							conexion.release();
 							callback(null,true);
 						}
 					}

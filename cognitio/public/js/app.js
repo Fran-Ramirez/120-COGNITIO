@@ -1,4 +1,4 @@
-var app = angular.module('mainApp', ['ngRoute','ngMaterial','ngMessages','oc.lazyLoad']);
+var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad']);
 app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
 	$routeProvider

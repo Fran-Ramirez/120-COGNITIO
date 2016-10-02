@@ -1,38 +1,23 @@
 <div ng-controller="log">
+	<h4>Ingresa a tu cuenta</h4>
+	<h5>{{mensaje}} <br/> O registrate si aún no lo haz hecho.</h5>
 	<form ng-submit="submit()">
-		<md-card>
-			<md-card-title>
-				<md-card-title-text>
-					<span class="md-headline">Ingresa a tu cuenta</span>
-					<span class="md-subhead">{{mensaje}} <br/> O registrate si aún no lo haz hecho.</span>
-				</md-card-title-text>
-			</md-card-title>
-			<md-card-content>
-				<div layout="row">
-					<md-input-container flex>
-						<label>Correo</label>
-						<input type='text' ng-model='user.correo'>
-					</md-input-container>
-					<md-input-container>
-						<label hide>@...</label>
-						<md-select ng-model='user.dominio'>
-							<md-option ng-repeat="x in correos" value="{{x}}">
-								{{x}}
-							</md-option>
-						</md-select>
-					</md-input-container>
-				</div>
-				<div layout="row">
-					<md-input-container flex>
-						<label>Contraseña</label>
-						<input type='password' ng-model='user.password'>
-					</md-input-container>
-					<md-button type='submit'>Ingresar</md-button>
-				</div>
-			</md-card-content>
-		</md-card>
-		<div layout="row">
-			<md-button ng-click='registro()'>Registrate</md-button>
+		<div>
+			<label for='c_1'>Correo</label>
+			<input type='text' ng-model='user.correo' id='c_1'>
+			<select ng-model='user.dominio'>
+				<option ng-repeat="x in correos" value="{{x}}">
+					{{x}}
+				</option>
+			</select>
+		</div>
+		<div>
+			<label for='p_1'>Contraseña</label>
+			<input type='password' ng-model='user.password' id='p_1'>
+		</div>
+		<div>
+			<input type='submit' value='Ingresar'>
+			<button ng-click='registro()'>Registrate</button>
 		</div>
 	</form>
 </div>

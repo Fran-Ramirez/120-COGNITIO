@@ -1,16 +1,35 @@
 <div ng-controller='controlTest'>
-	<md-card>
-		<md-card-title>
-			<md-card-title-text>
-				<span class="md-headline">Test de aprendizaje</span>
-				<span class="md-subhead">
-					Para terminar este test debes completar las siguientes 12 frases. Cada frase
-					puede termianrse de 4 formas distintas. Ordena las 4 opciones de cada frase 
-					según pienses que se ajustan a tu manera de aprender algo nuevo. Asegurate de
-					llenar las 12 frases. <font color='red'>Este test es importante ya que así tendrás
-					contenidos personalizados</font>.
-				</span>
-			</md-card-title-text>
-		</md-card-title>
-	</md-card>
+	
+	<h4>Test de aprendizaje</h4>
+	<h5>
+		Para terminar este test debes completar las siguientes 12 frases. Cada frase
+		puede terminarse de 4 formas distintas. Ordena las 4 opciones de cada frase 
+		según pienses que se ajustan a tu manera de aprender algo nuevo.
+		 <font color='red'>Este test es importante ya que al completarlo se mostrarán
+		 contenidos ajustados a tu forma de aprender</font>.
+	</h5>
+	<div>
+		<form ng-submit='submit()'>
+				<table border='1' ng-repeat='pregunta in tst.preguntas' ng-init='indexPregunta = $index'>
+					<tr>
+						<td>{{pregunta.frase}}</td>
+						<td ng-repeat='n in [1,2,3,4]'>{{n}}</td>
+					</tr>
+					
+					<tr ng-repeat='cat in pregunta.categorias' ng-init='indexCat = $index'>
+						<td>{{cat.texto}}</td>
+						<td ng-repeat='n in [1,2,3,4]'>
+							<input type='radio' ng-model='$parent.$parent.$parent.preg[indexPregunta][indexCat]' ng-value='n' ng-disabled='$parent.$parent.$parent.preg_lock[indexPregunta][n]' ng-change='$parent.$parent.$parent.lock(indexPregunta,n,indexCat)'>
+						</td>
+					</tr>
+					<tr>
+						<td colspan='5'>
+							<button ng-click='limpiar(indexPregunta)' ng-disabled='pregunta.boton'>Limpiar</button>
+						</td>
+					</tr>
+				</table>
+			<input type='submit' value='Responder'>
+		</form>
+		<button>Omitir</button>
+	</div>
 </div>
