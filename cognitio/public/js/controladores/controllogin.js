@@ -33,8 +33,10 @@ angular.module('mainApp').controller('log', ['$scope','$location','servicioInici
 	}
 }]);
 
-angular.module('mainApp').controller('reg', ['$scope','servicioInicio',function($scope,servicioInicio) {
-	
+angular.module('mainApp').controller('reg', ['$scope','$location','servicioInicio',function($scope,$location,servicioInicio) {
+	$scope.ingreso = function() {
+		$location.url("/");
+	}
 	$scope.submit = function() {
 		var datos = {
 				correo:$scope.user.correo,

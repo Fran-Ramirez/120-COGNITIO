@@ -2,10 +2,12 @@ var express        = require('express');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var helmet 		   = require('helmet'); //new
-var session 	   = require('express-session'); //new
-var mysqlStore     = require('express-mysql-session')(session); //new
-var config   	   = require('./config/vvv'); //new
+var helmet 		   = require('helmet'); 
+var session 	   = require('express-session'); 
+var mysqlStore     = require('express-mysql-session')(session); 
+var config   	   = require('./config/vvv'); 
+var mysql = require('mysql');
+var config_pool = require('./config/database');
 
 var port = process.env.PORT || 8080; 
 
@@ -26,19 +28,14 @@ app.use(session({
     unset:'destroy'
 }));
 
-var mysql = require('mysql');
-var config_pool = require('./config/database');
-global.pool = mysql.createPool(config_pool);
 
-//descomentar si no funciona
-//require('./app/rutas')(app); 
+global.pool = mysql.createPool(config_pool);
 
 app.use('/log', require('./app/rutas_log'));
 app.use('/main', require('./app/rutas_main'));
 
-//test borrar esto si no sirve
 app.get('*', function(req, res) {
-	res.sendfile('./public/views/index.html'); // load our public/index.html file
+	res.sendFile(__dirname + '/public/views/index.html');
 });
 
 app.listen(port);               
