@@ -37,7 +37,8 @@ id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 profesor_id INT(10) UNSIGNED,
 titulo CHAR(50) NOT NULL,
 descripcion CHAR(140) NOT NULL,
-FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE
+FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
+visible TINYINT(1) DEFAULT 1,
 );
 CREATE TABLE Topico (
 id_uni INT(10) UNSIGNED,
@@ -48,6 +49,7 @@ profesor_id INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id),
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
 FOREIGN KEY (id_uni) REFERENCES Unidad(id) ON UPDATE CASCADE
+visible TINYINT(1) DEFAULT 1,
 );
 CREATE TABLE Contenido (
 id_uni INT(10) UNSIGNED,
@@ -57,6 +59,7 @@ titulo CHAR(50) NOT NULL,
 info TEXT,
 archivo CHAR(255),
 borrador TINYINT(1),
+visible TINYINT(1) DEFAULT 1,
 etiqueta_id INT(10) UNSIGNED,
 profesor_id INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id_top,id),
@@ -100,7 +103,7 @@ nombre VARCHAR(20) NOT NULL UNIQUE,
 siguiente INT NOT NULL
 );
 INSERT INTO ____secuencias VALUES (n, st);
-END // 
+END //
 DELIMITER ;
 
 DROP PROCEDURE IF EXISTS BorrarSecuencia;
@@ -108,8 +111,8 @@ DELIMITER //
 CREATE PROCEDURE BorrarSecuencia (n VARCHAR(20))
 BEGIN
 DELETE FROM ____secuencias WHERE nombre = n;
-END 
-// 
+END
+//
 DELIMITER ;
 
 DROP FUNCTION IF EXISTS NextVal;
@@ -119,8 +122,8 @@ RETURNS INT
 BEGIN
 UPDATE ____secuencias SET siguiente = (@siguiente := siguiente) + 1 WHERE nombre = n;
 RETURN @siguiente;
-END 
-// 
+END
+//
 DELIMITER ;
 
 CALL Secuencia('seq_topico', 1);
@@ -150,6 +153,18 @@ FOR EACH ROW BEGIN
 SET NEW.id = (SELECT NextVal('seq_feedback'));
 END //
 DELIMITER ;
+
+DROP VIEW IF EXIST view_unidades_borradas;
+CREATE VIEW view_unidades_borradas AS
+SELECT * FROM Unidad WHERE visible = 0;
+
+DROP VIEW IF EXIST view_topicos_borrados;
+CREATE VIEW view_topicos_borrados AS
+SELECT * FROM Topico WHERE visible = 0 OR id_uni IN (SELECT id FROM view_unidades_borradas);
+
+DROP VIEW IF EXIST view_contenidos_borrados;
+CREATE VIEW view_contenidos_borrados AS
+SELECT * FROM Contenido WHERE visible = 0 OR id_top IN (SELECT id FROM view_topicos_borrados);
 
 INSERT INTO Perfil (nombre,cantidad) VALUES ('Adaptador', 0);
 INSERT INTO Perfil (nombre,cantidad) VALUES ('Asimilador', 0);
