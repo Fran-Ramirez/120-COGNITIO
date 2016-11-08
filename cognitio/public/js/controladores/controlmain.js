@@ -7,6 +7,42 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 			$location.url('/test');
 		}
 	});
+	servicioPrincipal.getUnidades().then(function(res) {
+		if(res.data.exito == false) {
+			$location.url('/');
+		}
+		else {
+			$scope.unidades = res.data.unidades;
+			$scope.uni_top = [];
+		}
+	});
+	$scope.logout = function() {
+		servicioPrincipal.logout().then(function(res) {
+			if(res.data.exito == true) {
+				$location.url('/');
+			}
+		});
+	};
+	$scope.cargarUnidad = function(id_uni) {
+		servicioPrincipal.cargarUnidad(id_uni).then(function(res) {
+			if(res.data.exito == false) {
+				$location.url('/');
+			}
+			else {
+				$scope.uni_top[id_uni] = res.data.topicos;
+			}
+		});
+	};
+	$scope.cargarContenidos = function(id_uni,id_top) {
+		servicioPrincipal.cargarContenido(id_uni,id_top).then(function(res) {
+			if(res.data.exito == false) {
+				$location.url('/');
+			}
+			else {
+				//$scope.uni_top[id_uni] = res.data.topicos;
+			}
+		});
+	};
 }]);
 
 angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$location','servicioPrincipal',function($scope,$rootScope,$location,servicioPrincipal) {
@@ -15,6 +51,13 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 			$location.url('/main');
 		}
 	});
+	$scope.skip = function() {
+		servicioPrincipal.skiptest().then(function(res) {
+			if(res.data.exito == true) {
+				$location.url('/');
+			}
+		});
+	};
 	$scope.tst = {"preguntas": [
 			{
 				"frase":"Cuando aprendo...",
@@ -118,7 +161,6 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 	$scope.submit = function() {
 		var datos = {respuestas:$scope.preg};
 		servicioPrincipal.sendTest(datos).then(function(res) {
-			console.log('wea');
 			if(res.data.exito == true) {
 				$location.url('/');
 			}

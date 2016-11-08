@@ -1,17 +1,74 @@
 var app = require('express').Router();
 
+app.get('/unidades', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		unidades.lista_unidades(function(err,uns) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,unidades:uns});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/unidad_topicos/:uni',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		unidades.lista_unidad_topico(req.params.uni, function(err,tops) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,topicos:tops});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/unidad_top_con/:uni/:top',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		unidades.lista_un_to_co(desencriptar(sess.correo), req.params.uni, req.params.top, function(err,con) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				console.log(con);
+				res.json({exito:true,contenidos:con});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
 app.get('/checktest', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var usuario = require('./modelos/usuario');
 		var pass = sess.passwd;
 		var correo = usuario.desencriptar(sess.correo);
+		var perfil = sess.skip;
 		usuario.getTest(correo,pass,function(err, b_test) {
 			if(err || b_test == null) {
 				res.json({exito:-1});
 			}
 			else {
-				if(b_test == false) {
+				if(b_test == false && perfil != true) {
 					res.json({test:false});
 				}
 				else {
@@ -19,6 +76,17 @@ app.get('/checktest', function(req, res) {
 				}
 			}
 		});
+	}
+	else {
+		res.json({exito:-1});
+	}
+});
+
+app.get('/skiptest', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		sess.skip = true;
+		res.json({exito:true});
 	}
 	else {
 		res.json({exito:-1});

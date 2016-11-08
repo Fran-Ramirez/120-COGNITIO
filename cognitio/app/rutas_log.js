@@ -10,12 +10,13 @@ app.get('/checklogin', function(req, res) {
 
 app.get('/logout', function(req,res) {
 	req.session.destroy(function(err) {
-  if(err) {
-    console.log(err);
-  } else {
-    res.redirect('/');
-  }
-});
+		if(err) {
+			console.log(err);
+			res.json({exito:false});
+		} else {
+			res.json({exito:true});
+		}
+	});
 });
 
 // route to handle creating goes here (app.post)
@@ -24,11 +25,10 @@ app.post('/signup', function(req,res) {
 		res.json({exito:false,mensaje:'Introducir correo, rol y contrasena'});
 	} 
 	else {
-		var Regex = require('regex');
-		var test_rol = new Regex(/^\d*\-[k|K|\d]$/);
-		var test_correo = new Regex(/^[a-z]*\.[a-z]*(?:\.[1-9]\d)?$/);
-		var mail= req.body.correo+req.body.dominio;
-		if(!test_correo.test(mail) || !test_rol.test(req.body.rol)) {
+		var mail = req.body.correo+req.body.dominio;
+		var test_rol = /^\d+\-[k|K|\d]$/g;
+		var test_correo = /^[a-z]+\.[a-z]+(?:\.[1-9]\d)?$/g;
+		if(!test_correo.test(req.body.correo) || !test_rol.test(req.body.rol)) {
 			delete test_rol;
 			delete test_correo;
 			res.json({exito:false,mensaje:'Uno de los campos está incorrecto'});
@@ -62,8 +62,12 @@ app.post('/autenticacion', function(req,res) {
 			var sess = req.session;
 			sess.correo = usuario.encriptar(mail);
 			sess.passwd = user.password;
+			sess.extra = usuario.encriptar(req.body.dominio);
+			if(user.perfil_id == null) {
+				sess.skip = false;
+			}
 			sess.cookie.expires = new Date(Date.now()+86400000);
-			
+			console.log(user);
 			res.json({exito:true});
 		}
 	});

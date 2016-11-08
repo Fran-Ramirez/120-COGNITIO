@@ -1,30 +1,48 @@
 <div ng-controller="reg">
-	<h4>Registra tu cuenta</h4>
-	<h5>{{mensaje}}</h5>
-    <form ng-submit="submit()" novalidate name="registro">
-		<div>
-			<label for='c_1'>Correo</label>
-			<input type='text' name='correo' id='c_1' ng-model='user.correo' required>
-		
-			<select ng-model='user.dominio'>
-				<option ng-repeat="x in correos" value="{{x}}">
-					{{x}}
-				</option>
-			</select>
-		</div>
-		<div>
-			<label for='r_1'>Rol</label>
-			<input type='text' name='rol' id='r_1' ng-model='user.rol' required>
-		</div>
-		<div>
-			<label for='c_2'>Contraseña</label>
-			<input type='password' name='pass' id='c_2' ng-model='user.password' required>
-		</div>
-		<div>
-			<input type='submit' value='Registrar'>
-		</div>
-		<div>
-			<button ng-click='ingreso()'>Ingreso</button>
-		</div>
-    </form>
+	<div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Registra tu cuenta</h3>
+                    </div>
+                    <div class="panel-body">
+						<h3 class="panel-title">{{mensaje}}</h3><br/>
+                        <form role="form" ng-submit="submit()" novalidate name="registro">
+                            <fieldset>
+                                <div class="form-group row">
+									<div class="col-md-6">
+										<input class="form-control" placeholder="E-mail" name='correo' id='c_1' ng-model='user.correo' required autofocus>
+									</div>
+									<div class="col-md-6">
+										<select class="form-control" ng-model='user.dominio'>
+											<option ng-repeat="x in correos" value="{{x}}">
+												{{x}}
+											</option>
+										</select>
+									</div>
+                                </div>
+                                <div class="form-group">
+									<input class="form-control" placeholder="Rol" type='text' name='rol' id='r_1' ng-model='user.rol' required>
+								</div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Contraseña" type = 'password' name='pass' id='c_2' ng-model='user.password' required>
+                                </div>
+                                <!-- Change this to a button or input when using this as a form -->
+                                <input class="btn btn-lg btn-success btn-block" type='submit' value='Registrar'>
+                           
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+						<div class="form-group row">
+							<div class="col-md-4">
+								<button class="btn btn-xs btn-info btn-block" ng-click='ingreso()'>Ingreso</button>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

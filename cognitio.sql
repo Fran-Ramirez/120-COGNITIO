@@ -37,8 +37,8 @@ id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 profesor_id INT(10) UNSIGNED,
 titulo CHAR(50) NOT NULL,
 descripcion CHAR(140) NOT NULL,
-FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
 visible TINYINT(1) DEFAULT 1,
+FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE
 );
 CREATE TABLE Topico (
 id_uni INT(10) UNSIGNED,
@@ -46,16 +46,16 @@ id INT(10) UNSIGNED,
 titulo CHAR(50) NOT NULL,
 descripcion CHAR(140) NOT NULL,
 profesor_id INT(10) UNSIGNED,
+visible TINYINT(1) DEFAULT 1,
 PRIMARY KEY (id_uni,id),
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
 FOREIGN KEY (id_uni) REFERENCES Unidad(id) ON UPDATE CASCADE
-visible TINYINT(1) DEFAULT 1,
 );
 CREATE TABLE Contenido (
 id_uni INT(10) UNSIGNED,
 id_top INT(10) UNSIGNED,
 id INT(10) UNSIGNED,
-titulo CHAR(50) NOT NULL,
+titulo CHAR(50),
 info TEXT,
 archivo CHAR(255),
 borrador TINYINT(1),
@@ -154,15 +154,12 @@ SET NEW.id = (SELECT NextVal('seq_feedback'));
 END //
 DELIMITER ;
 
-DROP VIEW IF EXIST view_unidades_borradas;
 CREATE VIEW view_unidades_borradas AS
 SELECT * FROM Unidad WHERE visible = 0;
 
-DROP VIEW IF EXIST view_topicos_borrados;
 CREATE VIEW view_topicos_borrados AS
 SELECT * FROM Topico WHERE visible = 0 OR id_uni IN (SELECT id FROM view_unidades_borradas);
 
-DROP VIEW IF EXIST view_contenidos_borrados;
 CREATE VIEW view_contenidos_borrados AS
 SELECT * FROM Contenido WHERE visible = 0 OR id_top IN (SELECT id FROM view_topicos_borrados);
 

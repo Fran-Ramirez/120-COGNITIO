@@ -1,3 +1,39 @@
-<div>
-asd
+<div id="wrapper">
+	<nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+		<!--BARRA HORIZONTAL-->
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/">120 Cognitio</a>
+		</div>
+		<ul class="nav navbar-top-links navbar-right">
+			<li class="dropdown">
+				<a class="dropdown-toggle" data-toggle="dropdown" href="#">
+					<i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+				</a>
+				<ul class="dropdown-menu dropdown-user">
+					<li class="divider"></li>
+					<li><a href="#" ng-click='logout()'><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+					</li>
+				</ul>
+			</li>
+		</ul>
+		
+		
+		<!---------------------->
+		<div class="navbar-default sidebar" role="navigation">
+			<div class="sidebar-nav navbar-collapse">
+				<ul class="nav" id="side-menu">
+					<li ng-repeat="u in unidades" ng-init='indexUnidad = $index'>
+						<a href="#" ng-click="cargarUnidad([u.id]);" data-target="#collapse_{{indexUnidad}}" data-toggle="collapse" data-parent="#side-menu">{{u.titulo}}<span class="fa arrow"></span></a>
+						<ul id="collapse_{{indexUnidad}}" class="nav nav-second-level collapse">
+							<li ng-repeat="t in uni_top[u.id]">
+								<a href="#" ng-click="cargarContenidos([u.id],[t.id]);">{{t.titulo}}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="page-wrapper">
+	</div>
 </div>
