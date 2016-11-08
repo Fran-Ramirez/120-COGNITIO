@@ -46,7 +46,6 @@ app.get('/unidad_top_con/:uni/:top',function(req,res) {
 				res.json({exito:false});
 			}
 			else {
-				console.log(con);
 				res.json({exito:true,contenidos:con});
 			}
 		});

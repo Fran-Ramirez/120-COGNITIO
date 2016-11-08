@@ -39,13 +39,12 @@ exports.lista_unidad_topico = function(id_uni, next) {
 };
 
 exports.lista_un_to_co = function(correo,id_uni,id_top,next) {
-	console.log(id_uni, id_top);
 	pool.getConnection(function(err,conexion){
         if (err) {
 			
         }
         else {
-			conexion.query("SELECT * FROM Contenido WHERE id_uni=? && id_top=?", id_uni, id_top, function(err, rows) {
+			conexion.query("select titulo,info,archivo from Contenido where id_uni=? and id_top=? and visible = 1 and etiqueta_id in (select etiqueta_id from Perfil_Etiqueta join Etiqueta on Perfil_Etiqueta.etiqueta_id = Etiqueta.id and Perfil_Etiqueta.perfil_id=(select perfil_id from Estudiante where correo=?))", [id_uni, id_top,correo], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,null);

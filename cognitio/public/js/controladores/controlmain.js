@@ -13,9 +13,11 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 		}
 		else {
 			$scope.unidades = res.data.unidades;
-			$scope.uni_top = [];
+			$scope.uni_top = {};
+			$scope.uni_top_con = {};
 		}
 	});
+	$scope.top_activo = "";
 	$scope.logout = function() {
 		servicioPrincipal.logout().then(function(res) {
 			if(res.data.exito == true) {
@@ -39,7 +41,15 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 				$location.url('/');
 			}
 			else {
-				//$scope.uni_top[id_uni] = res.data.topicos;
+				$scope.uni_top_con[id_uni] = {};
+				$scope.uni_top_con[id_uni][id_top]=res.data.contenidos;
+				for(var i=0; i<$scope.uni_top[id_uni].length;i++) {
+					if($scope.uni_top[id_uni][i].id == id_top) {
+						console.log($scope.uni_top[id_uni][i]);
+						$scope.top_activo = $scope.uni_top[id_uni][i].titulo;
+						break;
+					}
+				}
 			}
 		});
 	};
