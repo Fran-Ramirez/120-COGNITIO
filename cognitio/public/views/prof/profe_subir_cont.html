@@ -2,7 +2,7 @@
 	<div class="page-header">
 		<div class="row">
 			<div class="col-md-4">
-				<h4><a href="/">120 COGNITIO - {{titulo}}</a></h4>
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
 			</div>
 			<div class="col-md-4 col-md-offset-4">
 				<ul class="nav nav-pills">
@@ -32,7 +32,7 @@
 										Unidad
 									</div>
 									<div class="col-md-7">
-										<select class="form-control" ng-model='contenido.unidad' ng-options='u.id as u.titulo for u in unidades' ng-change="actualizarTopicos()"></select>
+										<select class="form-control" ng-model='todos.unidad' ng-options='u.id as u.titulo for u in unidades' ng-change="actualizarTopicos()"></select>
 									</div>
 								</div>
 								<div class="row">
@@ -40,20 +40,30 @@
 										Tópico
 									</div>
 									<div class="col-md-7">
-										<select class="form-control" ng-model='contenido.topico' ng-options='t.id as t.titulo for t in topicos'></select>
+										<select class="form-control" ng-model='todos.topico' ng-options='t.id as t.titulo for t in topicos'></select>
 									</div>
 								</div>
 								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
-								<div class = "row" ng-repeat="c_i in cant_cont" ng-init='indexContenido = $index'>
+							<!----------------------------------------PARTE DINAMICA------------------------------>
+								<div class = "row" ng-repeat="c_i in contenido" ng-init='indexContenido = $index'>
 									<div class="col-md-12">
 										<div class="panel panel-default">
+											<div ng-if="indexContenido!=0">
+												<div class="panel-heading">
+													<div class="row">
+														<div class="col-md-1 col-md-offset-11">
+															<button type="button" class="close" ng-click="delContenido(indexContenido)">x</button>
+														</div>
+													</div>
+												</div>
+											</div>
 											<div class="panel-body">
 												<div class="row">
 													<div class="col-md-5">
 														Título
 													</div>
 													<div class="col-md-7">
-														<input class="form-control" placeholder="Título" name="titulo" type="text" ng-model='contenido.titulo[indexContenido]'>
+														<input class="form-control" placeholder="Título" name="titulo" type="text" ng-model='contenido[indexContenido].titulo'>
 													</div>
 												</div>
 												<div class="row">
@@ -61,27 +71,28 @@
 														Etiqueta
 													</div>
 													<div class="col-md-7">
-														<select class="form-control" ng-model='contenido.etiqueta[indexContenido]' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta(indexContenido)"></select>
+														<select class="form-control" ng-model='contenido[indexContenido].etiqueta' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta(indexContenido)"></select>
 													</div>
 												</div>
 												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 												<div class="row">
 													<div class="col-md-12">
 														<div class="alert alert-info">
-															{{etiqueta_actual[indexContenido]}}
+															{{contenido[indexContenido].desc_etiq}}
 														</div>
 													</div>
 												</div>
 												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 												<div class="row">
 													<div class="col-md-12">
-														<div text-angular ng-model="htmlVariable"></div>
+														<div text-angular ng-model="contenido[indexContenido].texto"></div>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
+							<!--------------------------------------------FIN PARTE DINAMICA--------------------------------->
 								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 								<div class = "row">
 									<div class="col-md-4">

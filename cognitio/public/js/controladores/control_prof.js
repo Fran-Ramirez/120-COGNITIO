@@ -60,12 +60,7 @@ angular.module('mainApp').controller('main_prof', ['$scope', '$location', 'servi
 	};
 }]);
 
-angular.module('mainApp').controller('subir_cont', ['$scope', '$location', 'servicioProf', function($scope,$location,servicioProf) {
-	$scope.cant_cont = [0];
-	$scope.contenido = {};
-	$scope.contenido['etiqueta'] = [];
-	$scope.etiqueta_actual = [];
-	$scope.etiquetas = [];
+angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
 	servicioProf.getTipo().then(function(res) {
 		if(res.data.exito == false) {
 			servicioProf.logout();
@@ -78,63 +73,103 @@ angular.module('mainApp').controller('subir_cont', ['$scope', '$location', 'serv
 			else {
 				$scope.titulo = 'Profesor';
 			}
-		}
-	});
-	
-	servicioProf.getUnidades().then(function(res) {
-		if(res.data.exito == false) {
-			$location.url('/');
-		}
-		else {
-			$scope.unidades = res.data.unidades;
-			$scope.unidades.push({id:-1,titulo:"Nueva unidad"});
 			
-			$scope.contenido.unidad = -1;
-			$scope.topicos = [{id:-1,titulo:"Nuevo topico"}];
-			$scope.contenido.topico = -1;
+	/*[INICIO]------------------Variables------------------*/
+			$scope.contenido = [];
+			$scope.unidades = [];
+			$scope.topicos = [];
+			$scope.etiquetas = [];
+			$scope.todos = {};
+	/*[FIN]------------------Variables------------------*/	
+
+	/*[INICIO]------------------CARGA UNIDADES------------------*/
+			servicioProf.getUnidades().then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/');
+				}
+				else {
+					$scope.unidades = res.data.unidades;
+					$scope.unidades.push({id:-1,titulo:"Nueva unidad"});
+					$scope.topicos = [{id:-1,titulo:"Nuevo topico"}];
+					//topico unidad por defecto
+					$scope.todos['unidad'] = -1;
+					$scope.todos['topico'] = -1;
+				/*[INICIO]------------------CARGA ETIQUETAS------------------*/
+					servicioProf.getEtiquetas().then(function(res) {
+						if(res.data.exito == false) {
+							$location.url('/');
+						}
+						else {
+							$scope.etiquetas = res.data.etiquetas;
+							$scope.etiquetas.push({id:-1,nombre_etiqueta:"Escoja una etiqueta",descripcion:"Debe escoger una etiqueta para subir este contenido"});
+							
+							$scope.contenido.push(
+								{
+									titulo:"",
+									etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
+									desc_etiq:"Debe escoger una etiqueta para subir este contenido",
+									texto:""
+								}
+							);
+							
+						}
+					});
+				}
+			});
 		}
 	});
-	
-	servicioProf.getEtiquetas().then(function(res) {
-		if(res.data.exito == false) {
-			$location.url('/');
-		}
-		else {
-			$scope.etiquetas = res.data.etiquetas;
-			$scope.etiquetas.push({id:-1,nombre_etiqueta:"Escoja una etiqueta",descripcion:"Debe escoger una etiqueta para subir este contenido"});
-			$scope.contenido.etiqueta[0] = $scope.etiquetas[$scope.etiquetas.length-1].id;
-			$scope.etiqueta_actual[0] = "Debe escoger una etiqueta para subir este contenido";
-		}
-	});
-	
+
 	$scope.actualizarTopicos = function() {
-		if($scope.contenido.unidad != -1) {
-			servicioProf.cargarUnidad($scope.contenido.unidad).then(function(res){
+		if($scope.todos.unidad != -1) {
+			servicioProf.cargarUnidad($scope.todos.unidad).then(function(res){
 				if(res.data.exito==true) {
 					$scope.topicos = res.data.topicos;
-					$scope.contenido.topico = $scope.topicos[0].id;
+					$scope.todos.topico = $scope.topicos[0].id;
 				}
 			});
 		}
 		else {
 			$scope.topicos = [{id:-1,titulo:"Nuevo topico"}];
-			$scope.contenido.topico = -1;
+			$scope.todos.topico = -1;
 		}
 	};
 	
-	$scope.actualizarEtiqueta = function(id) {
+	$scope.actualizarEtiqueta = function(id_marcada) {
 		for(var i=0; i<$scope.etiquetas.length;i++) {
-			if($scope.etiquetas[i].id == $scope.contenido.etiqueta[id]) {
-				$scope.etiqueta_actual[id] = $scope.etiquetas[i].descripcion;
+			if($scope.etiquetas[i].id == $scope.contenido[id_marcada].etiqueta) {
+				$scope.contenido[id_marcada].desc_etiq = $scope.etiquetas[i].descripcion;
 				break;
 			}
 		}
 	};
 	$scope.addContenido = function() {
-		$scope.cant_cont.push($scope.cant_cont[$scope.cant_cont.length-1]+1);
-		$scope.contenido.etiqueta[$scope.cant_cont.length-1] = $scope.etiquetas[$scope.etiquetas.length-1].id;
-		$scope.etiqueta_actual[$scope.cant_cont.length-1] = "Debe escoger una etiqueta para subir este contenido";
+		$scope.contenido.push(
+			{
+				titulo:"",
+				etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
+				desc_etiq:"Debe escoger una etiqueta para subir este contenido",
+				texto:""
+			}
+		);
 	};
+	$scope.delContenido = function(id_marcada) {
+		ngDialog.open({
+			template:'\
+				<p>?Estás seguro que quieres eliminar esta vista?</p>\
+				<div class="ngdialog-buttons">\
+					<button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(0)">No</button>\
+					<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog(1)">Sí</button>\
+				</div>',
+			className: 'ngdialog-theme-default',
+			plain: true
+		}).closePromise.then(function(data) {
+			if(data.value == 1) {
+				$scope.contenido.splice(id_marcada, 1);
+				console.log($scope.contenido);
+			}
+		});
+	};
+	
 }]);
 
 //subir__Imagen
