@@ -45,14 +45,14 @@
 								</div>
 								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 							<!----------------------------------------PARTE DINAMICA------------------------------>
-								<div class = "row" ng-repeat="c_i in contenido" ng-init='indexContenido = $index'>
+								<div class = "row" ng-repeat="(llave, valor) in contenido" ng-init='indexContenido = $index'>
 									<div class="col-md-12">
 										<div class="panel panel-default">
 											<div ng-if="indexContenido!=0">
 												<div class="panel-heading">
 													<div class="row">
 														<div class="col-md-1 col-md-offset-11">
-															<button type="button" class="close" ng-click="delContenido(indexContenido)">x</button>
+															<button type="button" class="close" ng-click="delContenido(llave)">x</button>
 														</div>
 													</div>
 												</div>
@@ -63,7 +63,7 @@
 														Título
 													</div>
 													<div class="col-md-7">
-														<input class="form-control" placeholder="Título" name="titulo" type="text" ng-model='contenido[indexContenido].titulo'>
+														<input class="form-control" placeholder="Título" name="titulo" type="text" ng-model='contenido[llave].titulo'>
 													</div>
 												</div>
 												<div class="row">
@@ -71,21 +71,21 @@
 														Etiqueta
 													</div>
 													<div class="col-md-7">
-														<select class="form-control" ng-model='contenido[indexContenido].etiqueta' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta(indexContenido)"></select>
+														<select class="form-control" ng-model='contenido[llave].etiqueta' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta(llave)"></select>
 													</div>
 												</div>
 												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 												<div class="row">
 													<div class="col-md-12">
 														<div class="alert alert-info">
-															{{contenido[indexContenido].desc_etiq}}
+															{{contenido[llave].desc_etiq}}
 														</div>
 													</div>
 												</div>
 												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 												<div class="row">
 													<div class="col-md-12">
-														<div text-angular ng-model="contenido[indexContenido].texto"></div>
+														<div text-angular ng-model="contenido[llave].texto"></div>
 													</div>
 												</div>
 											</div>

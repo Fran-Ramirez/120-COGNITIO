@@ -49,3 +49,125 @@ exports.tipo_profe = function(usuario,pass,callback) {
 		}
 	});
 };
+
+exports.subir_contenido = function(tipo,unidad,topico,contenidos,callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			if(tipo==0) {
+				var pendientes = Object.keys(contenidos).length;
+				console.log(pendientes);
+				conexion.query("START TRANSACTION");
+				for(var llave in contenidos) {
+					conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[unidad,topico,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
+						if(err) {
+							conexion.query("ROLLBACK");
+							conexion.release();
+							callback(false);
+						}
+						else if(0 == --pendientes){
+							conexion.query("COMMIT");
+							conexion.release();
+							callback(true);
+						}
+					});
+				}
+			}
+			else if(tipo==-1) {
+				conexion.query("START TRANSACTION");
+				conexion.query("INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (?,?,?)",[unidad,topico.titulo,topico.descripcion], function(err,row) {
+					if(err) {
+						conexion.query("ROLLBACK");
+						conexion.release();
+						callback(false);
+					}
+					else {
+						var uni_id;
+						var top_id;
+						conexion.query("SELECT * FROM ____topico", function(err,row) {
+							if(err) {
+								conexion.query("ROLLBACK");
+								conexion.release();
+								callback(false);
+							}
+							else {
+								top_id = row[0].id;
+								uni_id = row[0].id_uni;
+								var pendientes = Object.keys(contenidos).length;
+								for(var llave in contenidos) {
+									conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[uni_id,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
+										if(err) {
+											conexion.query("ROLLBACK");
+											conexion.release();
+											callback(false);
+										}
+										else if(0 == --pendientes) {
+											conexion.query("COMMIT");
+											conexion.release();
+											callback(true);
+										}
+									});
+								}
+							}
+						});
+					}
+				});
+			}
+			else if(tipo==-2) {
+				conexion.query("START TRANSACTION");
+				conexion.query("INSERT INTO Unidad (titulo,descripcion) VALUES (?,?)",[unidad.titulo,unidad.descripcion], function(err,row) {
+					if(err) {
+						conexion.query("ROLLBACK");
+						conexion.release();
+						callback(false);
+					}
+					else {
+						//LAST_INSERT_ID()
+						conexion.query("INSERT INTO Topico (id_uni, titulo, descripcion) VALUES (LAST_INSERT_ID(),?,?)",[topico.titulo,topico.descripcion], function(err,row) {
+							if(err) {
+								conexion.query("ROLLBACK");
+								conexion.release();
+								callback(false);
+							}
+							else {
+								var uni_id;
+								var top_id;
+								conexion.query("SELECT * FROM ____topico", function(err,row) {
+									if(err) {
+										conexion.query("ROLLBACK");
+										conexion.release();
+										callback(false);
+									}
+									else {
+										top_id = row[0].id;
+										uni_id = row[0].id_uni;
+										var pendientes = Object.keys(contenidos).length;
+										for(var llave in contenidos) {
+											conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[uni_id,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
+												if(err) {
+													conexion.query("ROLLBACK");
+													conexion.release();
+													callback(false);
+												}
+												else if(0 == --pendientes) {
+													conexion.query("COMMIT");
+													conexion.release();
+													callback(true);
+												}
+											});
+										}
+									}
+								});
+							}
+						});
+					}
+				});
+			}
+			else {
+				
+			}
+		}
+	});
+};

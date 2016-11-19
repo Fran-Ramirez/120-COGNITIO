@@ -74,15 +74,35 @@ app.post('/subir_foto_contenido',function(req,res) {
 app.post('/uploadContents', function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
-		if(req.body.tipo==null || !req.body.unidad==null || !req.body.topico==null || !req.body.contenidos == null) {
-			res.json({exito:false,mensaje:'Algo salió mal'});
-		} 
-		else {
-			console.log(req.body.tipo);
-			console.log(req.body.unidad);
-			console.log(req.body.topico);
-			console.log(req.body.contenidos);
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.tipo==null || !req.body.unidad==null || !req.body.topico==null || !req.body.contenidos == null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				/*console.log(req.body.tipo);
+				console.log(req.body.unidad);
+				console.log(req.body.topico);
+				console.log(req.body.contenidos);*/
+				for(var llave in req.body.contenidos) {
+					if(req.body.contenidos[llave].etiqueta == -1) {
+						return res.json({exito:false,mensaje:'Uno de los contenidos no tiene etiqueta.'});
+					}
+					else if(req.body.contenidos[llave].texto.length == 0) {
+						return res.json({exito:false,mensaje:'Uno de los contenidos no tiene nada.'});
+					}
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.subir_contenido(req.body.tipo,req.body.unidad,req.body.topico,req.body.contenidos,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+				});
+			}
 		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
 	}
 });
 

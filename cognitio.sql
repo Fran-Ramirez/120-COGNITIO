@@ -94,6 +94,17 @@ fecha INT(11) UNSIGNED NOT NULL,
 datos TEXT,
 PRIMARY KEY (id)
 );
+CREATE TABLE IF NOT EXISTS ____contenido (
+id_uni INT(10) UNSIGNED NOT NULL,
+id_top INT(10) UNSIGNED NOT NULL,
+id INT(10) UNSIGNED NOT NULL
+);
+INSERT INTO ____contenido (id_uni,id_top,id) VALUES (0,0,0);
+CREATE TABLE IF NOT EXISTS ____topico (
+id_uni INT(10) UNSIGNED NOT NULL,
+id INT(10) UNSIGNED NOT NULL
+);
+INSERT INTO ____topico (id_uni,id) VALUES (0,0);
 
 DROP PROCEDURE IF EXISTS Secuencia;
 DELIMITER //
@@ -131,11 +142,13 @@ CALL Secuencia('seq_topico', 1);
 CALL Secuencia('seq_contenido', 1);
 CALL Secuencia('seq_feedback', 1);
 
+
 DROP TRIGGER IF EXISTS NuevoTopico;
 DELIMITER //
 CREATE TRIGGER NuevoTopico BEFORE INSERT ON Topico
 FOR EACH ROW BEGIN
 SET NEW.id = (SELECT NextVal('seq_topico'));
+UPDATE ____topico SET id_uni=NEW.id_uni,id=NEW.id;
 END //
 DELIMITER ;
 
@@ -144,6 +157,7 @@ DELIMITER //
 CREATE TRIGGER NuevoContenido BEFORE INSERT ON Contenido
 FOR EACH ROW BEGIN
 SET NEW.id = (SELECT NextVal('seq_contenido'));
+UPDATE ____contenido SET id_uni=NEW.id_uni,id_top=NEW.id_top,id=NEW.id;
 END //
 DELIMITER ;
 

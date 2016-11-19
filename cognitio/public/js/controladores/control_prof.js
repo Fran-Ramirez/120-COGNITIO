@@ -75,11 +75,12 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 			}
 			
 	/*[INICIO]------------------Variables------------------*/
-			$scope.contenido = [];
+			$scope.contenido = {};
 			$scope.unidades = [];
 			$scope.topicos = [];
 			$scope.etiquetas = [];
 			$scope.todos = {};
+			$scope.next_id = 0;
 	/*[FIN]------------------Variables------------------*/	
 
 	/*[INICIO]------------------CARGA UNIDADES------------------*/
@@ -103,15 +104,13 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 							$scope.etiquetas = res.data.etiquetas;
 							$scope.etiquetas.push({id:-1,nombre_etiqueta:"Escoja una etiqueta",descripcion:"Debe escoger una etiqueta para subir este contenido"});
 							
-							$scope.contenido.push(
-								{
-									titulo:"",
-									etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
-									desc_etiq:"Debe escoger una etiqueta para subir este contenido",
-									texto:""
-								}
-							);
-							
+							$scope.contenido[$scope.next_id] = {
+								titulo:"",
+								etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
+								desc_etiq:"Debe escoger una etiqueta para subir este contenido",
+								texto:""
+							};
+							$scope.next_id++;
 						}
 					});
 				}
@@ -144,14 +143,13 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 		}
 	};
 	$scope.addContenido = function() {
-		$scope.contenido.push(
-			{
-				titulo:"",
-				etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
-				desc_etiq:"Debe escoger una etiqueta para subir este contenido",
-				texto:""
-			}
-		);
+		$scope.contenido[$scope.next_id] = {
+			titulo:"",
+			etiqueta:$scope.etiquetas[$scope.etiquetas.length-1].id,
+			desc_etiq:"Debe escoger una etiqueta para subir este contenido",
+			texto:""
+		};
+		$scope.next_id++;
 	};
 	$scope.delContenido = function(id_marcada) {
 		ngDialog.open({
@@ -165,9 +163,7 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 			plain: true
 		}).closePromise.then(function(data) {
 			if(data.value == 1) {
-				console.log(id_marcada);
 				delete $scope.contenido[id_marcada];
-				console.log($scope.contenido);
 			}
 		});
 	};
@@ -178,7 +174,6 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 				className: 'ngdialog-theme-default'
 			}).closePromise.then(function(data) {
 				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
-					console.log(data.value);
 					if(data.value.unidad.titulo.length >= 1 && data.value.unidad.descripcion.length >= 1 && data.value.topico.titulo.length >= 1 && data.value.topico.descripcion.length >= 1) {
 						var datos_enviar = {
 							tipo:-2,
@@ -186,6 +181,29 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 							topico:data.value.topico,
 							contenidos:$scope.contenido
 						};
+						servicioProf.subirContenidos(datos_enviar).then(function(res) {
+						if(res.data.exito == true) {
+							ngDialog.openConfirm({
+								template:'\
+									<p>Los contenidos fueron subidos con éxito</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+							$location.url('/main_prof');
+						}
+						else {
+							ngDialog.openConfirm({
+								template:'\
+									<p>'+res.data.mensaje+'</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+						}
+					});
 					}
 				}
 			});
@@ -197,13 +215,35 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 			}).closePromise.then(function(data) {
 				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
 					if(data.value.topico.titulo.length >= 1 && data.value.topico.descripcion.length >= 1) {
-						console.log(data);
 						var datos_enviar = {
 							tipo:-1,
 							unidad:$scope.todos.unidad,
 							topico:data.value.topico,
 							contenidos:$scope.contenido
 						};
+						servicioProf.subirContenidos(datos_enviar).then(function(res) {
+						if(res.data.exito == true) {
+							ngDialog.openConfirm({
+								template:'\
+									<p>Los contenidos fueron subidos con éxito</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+							$location.url('/main_prof');
+						}
+						else {
+							ngDialog.openConfirm({
+								template:'\
+									<p>'+res.data.mensaje+'</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+						}
+					});
 					}
 				}
 			});
@@ -243,7 +283,27 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 						contenidos:$scope.contenido
 					};
 					servicioProf.subirContenidos(datos_enviar).then(function(res) {
-						console.log(res.data);
+						if(res.data.exito == true) {
+							ngDialog.openConfirm({
+								template:'\
+									<p>Los contenidos fueron subidos con éxito</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+							$location.url('/main_prof');
+						}
+						else {
+							ngDialog.openConfirm({
+								template:'\
+									<p>'+res.data.mensaje+'</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+						}
 					});
 				}
 			});
