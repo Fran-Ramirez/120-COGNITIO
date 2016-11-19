@@ -1,5 +1,36 @@
-var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad']);
-app.config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad','textAngular','ngDialog','ngFileUpload']);
+app.config(['$routeProvider', '$locationProvider', '$provide', function($routeProvider, $locationProvider, $provide) {
+
+	$provide.decorator('taOptions',['taRegisterTool','$delegate','ngDialog', function(taRegisterTool,taOptions,ngDialog){
+		taOptions.forceTextAngularSanitize = true;
+		taOptions.toolbar = [
+			['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+			['bold', 'italics', 'underline', 'strikeThrough', 'ul', 'ol', 'redo', 'undo', 'clear'],
+			['justifyLeft', 'justifyCenter', 'justifyRight', 'indent', 'outdent'],
+			['insertLink', 'insertVideo']
+			];
+		taRegisterTool('insertarImagen', {
+			iconclass: "fa fa-image",
+			action: function (deferred) {
+				ngDialog.open({
+						controller: 'subir__Imagen',
+						template: 'views/prof/subida.html',
+						className: 'ngdialog-theme-default'
+				}).closePromise.then(function(data) {
+					if(data.value == '$escape' || data.value == '$closeButton' || data.value == '$document') {
+						deferred.resolve();
+					}
+					else {
+						document.execCommand('insertImage', true, data.value);
+						deferred.resolve();
+					}
+				});
+				return false;
+			}
+		});
+		taOptions.toolbar[3].push('insertarImagen');
+		return taOptions;
+	}]);
 
 	$routeProvider
 
@@ -22,7 +53,72 @@ app.config(['$routeProvider', '$locationProvider', function($routeProvider, $loc
 					}]
 			}
 	})
+	/*[INICIO]--------Paginas profesores-----------*/
+	.when('/prof_login', {
+		templateUrl: 'views/prof/inicio_prof.html',
+		controller: 'log_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/main_prof', {
+		templateUrl: 'views/prof/main_prof.html',
+		controller: 'main_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/profe_subir_cont', {
+		templateUrl: 'views/prof/profe_subir_cont.html',
+		controller: 'subir_cont',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
 	
+	.when('/profe_panel', {
+		templateUrl: 'views/prof/profe_panel.html',
+		controller: 'main_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/profe_feed', {
+		templateUrl: 'views/prof/profe_feed.html',
+		controller: 'main_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/prof_alertas', {
+		templateUrl: 'views/prof/prof_alertas.html',
+		controller: 'main_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/prof_config', {
+		templateUrl: 'views/prof/prof_config.html',
+		controller: 'main_prof',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	/*[FIN]--------Paginas profesores-----------*/
 	.when('/test', {
 		templateUrl: 'views/main/test.html',
 		controller: 'controlTest',

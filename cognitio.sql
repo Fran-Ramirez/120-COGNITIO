@@ -22,15 +22,16 @@ id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 nombre CHAR(20) NOT NULL,
 apellido1 CHAR(20) NOT NULL,
 apellido2 CHAR(20) NOT NULL,
-correo CHAR(50) NOT NULL,
-foto CHAR(255) NOT NULL,
-password CHAR(50) NULL,
+correo CHAR(50) UNIQUE,
+foto CHAR(255) NULL,
+password CHAR(50) NOT NULL,
 coordinador TINYINT(1) NOT NULL,
 suspendido TINYINT(1) NOT NULL
 );
 CREATE TABLE Etiqueta (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-nombre_etiqueta CHAR(50) NOT NULL
+nombre_etiqueta CHAR(50) NOT NULL,
+descripcion char(255) NOT NULL
 );
 CREATE TABLE Unidad (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -167,3 +168,4 @@ INSERT INTO Perfil (nombre,cantidad) VALUES ('Adaptador', 0);
 INSERT INTO Perfil (nombre,cantidad) VALUES ('Asimilador', 0);
 INSERT INTO Perfil (nombre,cantidad) VALUES ('Convergente', 0);
 INSERT INTO Perfil (nombre,cantidad) VALUES ('Divergente', 0);
+

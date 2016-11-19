@@ -3,7 +3,13 @@ var app = require('express').Router();
 app.get('/checklogin', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
-		return res.json({exito:true,datos:sess});
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@alumnos.usm.cl' || desencriptar(sess.extra)=='@sansano.usm.cl') {
+			return res.json({exito:true,datos:sess});
+		}
+		else if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			return res.json({exito:false,correos:null});
+		}
 	}
 	res.json({exito:false,correos:['@alumnos.usm.cl','@sansano.usm.cl']});
 });
@@ -19,7 +25,6 @@ app.get('/logout', function(req,res) {
 	});
 });
 
-// route to handle creating goes here (app.post)
 app.post('/signup', function(req,res) {
 	if(!req.body.correo || !req.body.dominio || !req.body.rol || !req.body.password) {
 		res.json({exito:false,mensaje:'Introducir correo, rol y contrasena'});
@@ -61,13 +66,12 @@ app.post('/autenticacion', function(req,res) {
 		else {
 			var sess = req.session;
 			sess.correo = usuario.encriptar(mail);
-			sess.passwd = user.password;
+			sess.passwd = usuario.encriptar(user.password);
 			sess.extra = usuario.encriptar(req.body.dominio);
 			if(user.perfil_id == null) {
 				sess.skip = false;
 			}
 			sess.cookie.expires = new Date(Date.now()+86400000);
-			console.log(user);
 			res.json({exito:true});
 		}
 	});

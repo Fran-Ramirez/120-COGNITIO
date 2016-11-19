@@ -1,0 +1,28 @@
+<form data-ng-submit="insertar()">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title"><span class="glyphicon glyphicon-picture"></span> Upload Image</h4>
+        </div>
+    </div>
+    <div class="row">
+		<div class="col-md-12">
+			<img class="img-responsive img-thumbnail center-block" ng-src="{{image}}">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			<p ng-class="estado.diseno">{{estado.txt}}</p>
+		</div>
+	</div>
+    <div class="row">
+		<div class="col-md-4">
+			<button type="button" ng-click="cancelarOp()" class="btn btn-default pull-left">Cancelar</button>
+		</div>
+		<div class="col-md-4">
+			<button type="submit" ng-disabled="image == null || image == '' || image == 'imagenes/default.jpg'" class="btn btn-primary pull-right">Insertar</button>
+		</div>
+		<div class="col-md-4">
+			<button type="button" ngf-pattern="'image/*'" ngf-accept="'image/*'" ngf-select="upload($files)" ngf-max-size="1MB" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-picture mR5"></span> Seleccionar</button>
+		</div>
+    </div>
+</form>

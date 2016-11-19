@@ -57,3 +57,23 @@ exports.lista_un_to_co = function(correo,id_uni,id_top,next) {
 		}   
 	});
 };
+
+exports.etiquetas = function(next) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("select id,nombre_etiqueta,descripcion from Etiqueta", function(err, rows) {
+				if (err) {
+					conexion.release();
+					next(err,null);
+				}
+				else {
+					conexion.release();
+					next(null,rows);
+				}
+			});
+		}   
+	});
+};

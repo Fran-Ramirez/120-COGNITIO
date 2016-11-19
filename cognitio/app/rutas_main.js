@@ -59,7 +59,7 @@ app.get('/checktest', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var usuario = require('./modelos/usuario');
-		var pass = sess.passwd;
+		var pass = usuario.desencriptar(sess.passwd);
 		var correo = usuario.desencriptar(sess.correo);
 		var perfil = sess.skip;
 		usuario.getTest(correo,pass,function(err, b_test) {
@@ -130,7 +130,7 @@ app.post('/respondertest', function(req, res) {
 					var x = EA-OR;
 					var y = CA-EC;
 					var usuario = require('./modelos/usuario');
-					var pass = sess.passwd;
+					var pass = usuario.desencriptar(sess.passwd);
 					var correo = usuario.desencriptar(sess.correo);
 					var tipo_perfil;
 					if(y<=3) {

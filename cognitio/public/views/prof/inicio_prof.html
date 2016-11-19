@@ -1,0 +1,36 @@
+<div ng-controller="log_prof">
+	<div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="login-panel panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Ingreso profesores</h3>
+                    </div>
+                    <div class="panel-body">
+						<h3 class="panel-title">{{mensaje}}</h3><br/>
+                        <form role="form" ng-submit="submit()">
+                            <fieldset>
+                                <div class="form-group row">
+									<div class="col-md-6">
+										<input class="form-control" placeholder="E-mail" name="email" type="text" ng-model='user.correo' id='c_1' autofocus>
+									</div>
+									<div class="col-md-6">
+										<select class="form-control" ng-model='user.dominio'>
+											<option ng-repeat="x in correos" value="{{x}}">
+												{{x}}
+											</option>
+										</select>
+									</div>
+                                </div>
+                                <div class="form-group">
+                                    <input class="form-control" placeholder="Password" name="password" type="password" ng-model='user.password' id='p_1'>
+                                </div>
+                                <input class="btn btn-lg btn-success btn-block" type='submit' value='Ingresar'>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

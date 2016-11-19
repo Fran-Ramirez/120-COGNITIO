@@ -1,35 +1,79 @@
 <div ng-controller='controlTest'>
-	
-	<h4>Test de aprendizaje</h4>
-	<h5>
-		Para terminar este test debes completar las siguientes 12 frases. Cada frase
-		puede terminarse de 4 formas distintas. Ordena las 4 opciones de cada frase 
-		según pienses que se ajustan a tu manera de aprender algo nuevo.
-		 <font color='red'>Este test es importante ya que al completarlo se mostrarán
-		 contenidos ajustados a tu forma de aprender</font>.
-	</h5>
-	<div>
-		<form ng-submit='submit()'>
-				<table border='1' ng-repeat='pregunta in tst.preguntas' ng-init='indexPregunta = $index'>
-					<tr>
-						<td>{{pregunta.frase}}</td>
-						<td ng-repeat='n in [1,2,3,4]'>{{n}}</td>
-					</tr>
-					
-					<tr ng-repeat='cat in pregunta.categorias' ng-init='indexCat = $index'>
-						<td>{{cat.texto}}</td>
-						<td ng-repeat='n in [1,2,3,4]'>
-							<input type='radio' ng-model='$parent.$parent.$parent.preg[indexPregunta][indexCat]' ng-value='n' ng-disabled='$parent.$parent.$parent.preg_lock[indexPregunta][n]' ng-change='$parent.$parent.$parent.lock(indexPregunta,n,indexCat)'>
-						</td>
-					</tr>
-					<tr>
-						<td colspan='5'>
-							<button ng-click='limpiar(indexPregunta)' ng-disabled='pregunta.boton'>Limpiar</button>
-						</td>
-					</tr>
-				</table>
-			<input type='submit' value='Responder'>
-		</form>
-		<button class="btn btn-xs btn-danger btn-block" ng-click='skip()'>Omitir</button>
+	<div class="page-header">
+		<h3>Test de aprendizaje</h3>
+	</div>
+	<p align="justify">Para terminar este test debes completar las siguientes 12 frases. Cada frase
+	puede terminarse de 4 formas distintas. Ordena las 4 opciones de cada frase 
+	según pienses que se ajustan a tu manera de aprender algo nuevo.
+	<span class="text-danger">Este test es importante ya que al completarlo se mostrarán
+	contenidos ajustados a tu forma de aprender</span>.</p>
+	<p align="justify">Al omitir el test éste no se volverá a pedir hasta el siguiente inicio de sesión.</p>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2">
+				<div class="form-group row">
+					<div class="col-md-1" ng-repeat="p in progreso track by $index">
+						<span ng-style="progreso[$index][0]">{{p[1]}}</span>
+					</div>
+				</div>
+				<div class="form-group row">
+					<div class="col-md-1" ng-repeat="p in progreso_pos track by $index">
+						{{p}}
+					</div>
+				</div>
+				<form role="form" ng-submit='submit()'>
+					<fieldset>
+						<div ng-repeat='pregunta in tst.preguntas' ng-init='indexPregunta = $index'>
+							<div class="panel panel-primary" ng-hide="visible[indexPregunta]">
+								<div class="panel-heading">
+									<h3 class="panel-title">{{pregunta.frase}}</h3>
+								</div>
+								<div class="panel-body">
+									<div class="form-group row">
+										<div class="col-md-8"></div>
+										<div ng-repeat='n in [1,2,3,4]'>
+											<div class="col-md-1">
+												{{n}}
+											</div>
+										</div>
+									</div>
+									<div class="form-group row" ng-repeat='cat in pregunta.categorias' ng-init='indexCat = $index'>
+										<div class="col-md-8">
+											{{cat.texto}}
+										</div>
+										<div ng-repeat='n in [1,2,3,4]'>
+											<div class="col-md-1">
+												<input class="form-control" type='radio' ng-model='$parent.$parent.$parent.preg[indexPregunta][indexCat]' ng-value='n' ng-disabled='$parent.$parent.$parent.preg_lock[indexPregunta][n]' ng-change='$parent.$parent.$parent.lock(indexPregunta,n,indexCat)'>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="panel-footer">
+									<div class="form-group row">
+										<div class="col-md-4">
+											<button type="button" class='btn btn-xs btn-primary btn-block' ng-click='back()' ng-disabled='botones[0]'>Anterior</button>
+										</div>
+										<div class="col-md-4">
+											<button type="button" class='btn btn-xs btn-warning btn-block' ng-click='limpiar(indexPregunta)' ng-disabled='pregunta.boton'>Limpiar</button>
+										</div>
+										<div class="col-md-4">
+											<button type="button" class='btn btn-xs btn-primary btn-block' ng-click='next()' ng-disabled='botones[1]'>Siguiente</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>		
+						<div class="form-group row">
+							<div class="col-md-6">
+								<button type="button" class="btn btn-xs btn-danger btn-block" ng-click='skip()'>Omitir</button>
+							</div>
+							<div class="col-md-6">
+								<input class="btn btn-xs btn-success btn-block" type='submit' ng-disabled="enviar" value='Responder'>
+							</div>
+						</div>
+					</fieldset>
+				</form>
+			</div>
+		</div>
 	</div>
 </div>

@@ -68,6 +68,8 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 			}
 		});
 	};
+	$scope.pregunta_actual = 0;
+	$scope.botones = [true,false];
 	$scope.tst = {"preguntas": [
 			{
 				"frase":"Cuando aprendo...",
@@ -168,6 +170,55 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 			}
 		]
 	};
+	$scope.visible = Array.apply(null, Array(12)).map(Boolean.prototype.valueOf,true);
+	$scope.visible[0]=false;
+	$scope.enviar = true;
+	$scope.elem_copl = 0;
+	$scope.progreso = Array.apply(null, Array(12)).map(Array.prototype.valueOf,[{"color":"red"},"X"]);
+	$scope.progreso_pos = Array.apply(null, Array(12)).map(String.prototype.valueOf,"");
+	$scope.progreso_pos[0]="△";
+	$scope.next= function() {
+		if($scope.pregunta_actual >= 11) {
+			$scope.pregunta_actual = 11;
+			$scope.visible.map(Boolean.prototype.valueOf,true);
+			$scope.visible[11]=false;
+			$scope.botones = [false,true];
+		}
+		else {
+			$scope.visible[$scope.pregunta_actual]=true;
+			$scope.progreso_pos[$scope.pregunta_actual] = "";
+			$scope.visible[$scope.pregunta_actual+1]=false;
+			$scope.progreso_pos[$scope.pregunta_actual+1] = "△";
+			$scope.pregunta_actual++;
+			if($scope.pregunta_actual!=0 && $scope.pregunta_actual!=11) {
+				$scope.botones = [false,false];
+			}
+			else if($scope.pregunta_actual==11) {
+				$scope.botones = [false,true];
+			}
+		}
+	};
+	$scope.back= function() {
+		if($scope.pregunta_actual <= 0) {
+			$scope.pregunta_actual = 0;
+			$scope.visible.map(Boolean.prototype.valueOf,true);
+			$scope.visible[0]=false;
+			$scope.botones = [true,false];
+		}
+		else {
+			$scope.visible[$scope.pregunta_actual]=true;
+			$scope.progreso_pos[$scope.pregunta_actual] = "";
+			$scope.visible[$scope.pregunta_actual-1]=false;
+			$scope.progreso_pos[$scope.pregunta_actual-1] = "△";
+			$scope.pregunta_actual--;
+			if($scope.pregunta_actual!=0 && $scope.pregunta_actual!=11) {
+				$scope.botones = [false,false];
+			}
+			else if($scope.pregunta_actual==0) {
+				$scope.botones = [true,false];
+			}
+		}
+	};
 	$scope.submit = function() {
 		var datos = {respuestas:$scope.preg};
 		servicioPrincipal.sendTest(datos).then(function(res) {
@@ -197,6 +248,11 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 		if((1 in $scope.preg_lock[i1]) && (2 in $scope.preg_lock[i1]) && (3 in $scope.preg_lock[i1]) && (4 in $scope.preg_lock[i1])) {
 			if($scope.preg_lock[i1][1] == true && $scope.preg_lock[i1][2] == true && $scope.preg_lock[i1][3] == true && $scope.preg_lock[i1][4] == true) {
 				$scope.tst.preguntas[i1].boton = false;
+				$scope.progreso[i1] = [{"color":"green"},"◯"];
+				$scope.elem_copl++;
+				if($scope.elem_copl == 12) {
+					$scope.enviar = false;
+				}
 			}
 		}
 	};
@@ -211,5 +267,8 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 			$scope.preg_old[i1][x] = null;
 		}
 		$scope.tst.preguntas[i1].boton = true;
+		$scope.progreso[i1] = [{"color":"red"},"X"];
+		$scope.elem_copl--;
+		$scope.enviar = true;
 	};
 }]);

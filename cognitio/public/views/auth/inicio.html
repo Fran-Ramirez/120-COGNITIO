@@ -25,7 +25,6 @@
                                 <div class="form-group">
                                     <input class="form-control" placeholder="Password" name="password" type="password" ng-model='user.password' id='p_1'>
                                 </div>
-                                <!-- Change this to a button or input when using this as a form -->
                                 <input class="btn btn-lg btn-success btn-block" type='submit' value='Ingresar'>
                            
                             </fieldset>
@@ -37,12 +36,17 @@
 								O registrate si aún no lo haz hecho.
 							</div>
 							<div class="col-md-4">
-								<button class="btn btn-xs btn-info btn-block" ng-click='registro()'>Registrate</button>
+								<button type="button" class="btn btn-xs btn-info btn-block" ng-click='registro()'>Registrate</button>
 							</div>
 						</div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class='row'>
+			<div class='col-md-offset-11'>
+				<a href='#' class='btn btn-xs btn-warning' role='button' ng-click='profl()'>Profesores</a>
+			</div>	
+		</div>
     </div>
 </div>

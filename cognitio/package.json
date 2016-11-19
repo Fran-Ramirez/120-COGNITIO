@@ -9,7 +9,11 @@
     "express-session": "^1.14.1",
     "helmet": "^2.2.0",
     "method-override": "^2.3.6",
+    "multer": "^1.2.0",
     "mysql": "^2.11.1",
-    "oclazyload": "^1.0.9"
+    "ng-dialog": "^0.6.4",
+    "ng-file-upload": "^12.2.13",
+    "oclazyload": "^1.0.9",
+    "textangular": "^1.5.13"
   }
 }

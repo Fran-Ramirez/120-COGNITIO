@@ -4,9 +4,14 @@ angular.module('mainApp').controller('controllogin', ['$scope','$rootScope','$lo
 			$location.url('/main');
 		}
 		else {
-			$scope.correos=res.data.correos;
-			$scope.user = {};
-			$scope.user.dominio=$scope.correos[0];
+			if(res.data.correos == null) {
+				$location.url('/prof_login');
+			}
+			else {
+				$scope.correos=res.data.correos;
+				$scope.user = {};
+				$scope.user.dominio=$scope.correos[0];
+			}
 		}
 	});
 
@@ -15,12 +20,12 @@ angular.module('mainApp').controller('controllogin', ['$scope','$rootScope','$lo
 angular.module('mainApp').controller('log', ['$scope','$location','servicioInicio',function($scope,$location,servicioInicio) {
 	$scope.registro = function() {
 		$location.url("/registro");
-	}
+	};
 	$scope.submit = function() {
 		var datos = {
-				correo:$scope.user.correo,
-				dominio:$scope.user.dominio,
-				password:$scope.user.password
+			correo:$scope.user.correo,
+			dominio:$scope.user.dominio,
+			password:$scope.user.password
 		};
 		servicioInicio.log(datos).then(function(res) {
 			if(res.data.exito == true) {
@@ -30,7 +35,10 @@ angular.module('mainApp').controller('log', ['$scope','$location','servicioInici
 				$scope.mensaje = res.data.mensaje;
 			}
 		});
-	}
+	};
+	$scope.profl = function() {
+		$location.url("/prof_login");
+	};
 }]);
 
 angular.module('mainApp').controller('reg', ['$scope','$location','servicioInicio',function($scope,$location,servicioInicio) {

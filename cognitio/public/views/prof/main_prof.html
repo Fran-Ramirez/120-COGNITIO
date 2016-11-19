@@ -1,0 +1,30 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3">
+			<div class="well">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2">
+						<div class="btn-group-vertical center-block">
+							<button type="button" class="btn btn-default" ng-click='ir("/profe_subir_cont")'>Subir contenido</button>
+							<button type="button" class="btn btn-default" ng-click='ir("/profe_panel")'>Panel de control contenido</button>
+							<button type="button" class="btn btn-default" ng-click='ir("/profe_feed")'>Feedback</button>
+							<button type="button" class="btn btn-default" ng-click='ir("/prof_alertas")'>Alertas <span class="badge">{{alertas}}</span></button>
+							<button ng-repeat="e in extras" type="button" class="btn btn-default" ng-click='ir(e.fnc)'>{{e.txt}}</button>
+							<button type="button" class="btn btn-default" ng-click='ir("/prof_config")'>Configuración</button>
+							<button type="button" class="btn btn-default" ng-click='logout()'>Cerrar Sesión</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
