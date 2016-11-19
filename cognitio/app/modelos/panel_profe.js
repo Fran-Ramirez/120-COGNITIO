@@ -84,20 +84,18 @@ exports.subir_contenido = function(tipo,unidad,topico,contenidos,callback) {
 						callback(false);
 					}
 					else {
-						var uni_id;
 						var top_id;
-						conexion.query("SELECT * FROM ____topico", function(err,row) {
+						conexion.query("SELECT MAX(id) FROM Topico WHERE id_uni=?", [unidad], function(err,row) {
 							if(err) {
 								conexion.query("ROLLBACK");
 								conexion.release();
 								callback(false);
 							}
 							else {
-								top_id = row[0].id;
-								uni_id = row[0].id_uni;
+								top_id = row[0]['MAX(id)'];
 								var pendientes = Object.keys(contenidos).length;
 								for(var llave in contenidos) {
-									conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[uni_id,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
+									conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[unidad,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
 										if(err) {
 											conexion.query("ROLLBACK");
 											conexion.release();
@@ -124,40 +122,46 @@ exports.subir_contenido = function(tipo,unidad,topico,contenidos,callback) {
 						callback(false);
 					}
 					else {
-						//LAST_INSERT_ID()
-						conexion.query("INSERT INTO Topico (id_uni, titulo, descripcion) VALUES (LAST_INSERT_ID(),?,?)",[topico.titulo,topico.descripcion], function(err,row) {
+						conexion.query("SELECT MAX(id) FROM Unidad", function(err,row) {
 							if(err) {
 								conexion.query("ROLLBACK");
 								conexion.release();
 								callback(false);
 							}
 							else {
-								var uni_id;
-								var top_id;
-								conexion.query("SELECT * FROM ____topico", function(err,row) {
+								var uni_id = row[0]['MAX(id)'];
+								conexion.query("INSERT INTO Topico (id_uni, titulo, descripcion) VALUES (?,?,?)",[uni_id,topico.titulo,topico.descripcion], function(err,row) {
 									if(err) {
 										conexion.query("ROLLBACK");
 										conexion.release();
 										callback(false);
 									}
 									else {
-										top_id = row[0].id;
-										uni_id = row[0].id_uni;
-										var pendientes = Object.keys(contenidos).length;
-										for(var llave in contenidos) {
-											conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[uni_id,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
-												if(err) {
-													conexion.query("ROLLBACK");
-													conexion.release();
-													callback(false);
+										conexion.query("SELECT MAX(id) FROM Topico WHERE (id_uni=?)", [uni_id], function(err,row) {
+											if(err) {
+												conexion.query("ROLLBACK");
+												conexion.release();
+												callback(false);
+											}
+											else {
+												var top_id = row[0]['MAX(id)'];
+												var pendientes = Object.keys(contenidos).length;
+												for(var llave in contenidos) {
+													conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[uni_id,top_id,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {
+														if(err) {
+															conexion.query("ROLLBACK");
+															conexion.release();
+															callback(false);
+														}
+														else if(0 == --pendientes) {
+															conexion.query("COMMIT");
+															conexion.release();
+															callback(true);
+														}
+													});
 												}
-												else if(0 == --pendientes) {
-													conexion.query("COMMIT");
-													conexion.release();
-													callback(true);
-												}
-											});
-										}
+											}
+										});
 									}
 								});
 							}

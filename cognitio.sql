@@ -19,9 +19,9 @@ FOREIGN KEY (perfil_id) REFERENCES Perfil(id) ON UPDATE CASCADE
 );
 CREATE TABLE Profesor (
 id INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-nombre CHAR(20) NOT NULL,
-apellido1 CHAR(20) NOT NULL,
-apellido2 CHAR(20) NOT NULL,
+nombre CHAR(20) NULL,
+apellido1 CHAR(20) NULL,
+apellido2 CHAR(20) NULL,
 correo CHAR(50) UNIQUE,
 foto CHAR(255) NULL,
 password CHAR(50) NOT NULL,
@@ -39,6 +39,7 @@ profesor_id INT(10) UNSIGNED,
 titulo CHAR(50) NOT NULL,
 descripcion CHAR(140) NOT NULL,
 visible TINYINT(1) DEFAULT 1,
+pos INT(10) UNSIGNED,
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE
 );
 CREATE TABLE Topico (
@@ -48,6 +49,7 @@ titulo CHAR(50) NOT NULL,
 descripcion CHAR(140) NOT NULL,
 profesor_id INT(10) UNSIGNED,
 visible TINYINT(1) DEFAULT 1,
+pos INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id),
 FOREIGN KEY (profesor_id) REFERENCES Profesor(id) ON UPDATE CASCADE,
 FOREIGN KEY (id_uni) REFERENCES Unidad(id) ON UPDATE CASCADE
@@ -61,6 +63,7 @@ info TEXT,
 archivo CHAR(255),
 borrador TINYINT(1),
 visible TINYINT(1) DEFAULT 1,
+pos INT(10) UNSIGNED,
 etiqueta_id INT(10) UNSIGNED,
 profesor_id INT(10) UNSIGNED,
 PRIMARY KEY (id_uni,id_top,id),
@@ -94,61 +97,31 @@ fecha INT(11) UNSIGNED NOT NULL,
 datos TEXT,
 PRIMARY KEY (id)
 );
-CREATE TABLE IF NOT EXISTS ____contenido (
-id_uni INT(10) UNSIGNED NOT NULL,
-id_top INT(10) UNSIGNED NOT NULL,
-id INT(10) UNSIGNED NOT NULL
-);
-INSERT INTO ____contenido (id_uni,id_top,id) VALUES (0,0,0);
-CREATE TABLE IF NOT EXISTS ____topico (
-id_uni INT(10) UNSIGNED NOT NULL,
-id INT(10) UNSIGNED NOT NULL
-);
-INSERT INTO ____topico (id_uni,id) VALUES (0,0);
 
-DROP PROCEDURE IF EXISTS Secuencia;
+DROP TRIGGER IF EXISTS PosUnidad;
 DELIMITER //
-CREATE PROCEDURE Secuencia (n VARCHAR(20), st INT)
-BEGIN
-CREATE TABLE IF NOT EXISTS ____secuencias (
-nombre VARCHAR(20) NOT NULL UNIQUE,
-siguiente INT NOT NULL
-);
-INSERT INTO ____secuencias VALUES (n, st);
+CREATE TRIGGER PosUnidad BEFORE INSERT ON Unidad
+FOR EACH ROW BEGIN
+DECLARE aux_pos1 INT(10) UNSIGNED;
+DECLARE aux_pos2 INT(10) UNSIGNED;
+SELECT MAX(pos) INTO aux_pos1 FROM Unidad;
+SELECT IFNULL(aux_pos1,0) INTO aux_pos2;
+SET NEW.pos = (aux_pos2+1);
 END //
 DELIMITER ;
-
-DROP PROCEDURE IF EXISTS BorrarSecuencia;
-DELIMITER //
-CREATE PROCEDURE BorrarSecuencia (n VARCHAR(20))
-BEGIN
-DELETE FROM ____secuencias WHERE nombre = n;
-END
-//
-DELIMITER ;
-
-DROP FUNCTION IF EXISTS NextVal;
-DELIMITER //
-CREATE FUNCTION NextVal (n VARCHAR(20))
-RETURNS INT
-BEGIN
-UPDATE ____secuencias SET siguiente = (@siguiente := siguiente) + 1 WHERE nombre = n;
-RETURN @siguiente;
-END
-//
-DELIMITER ;
-
-CALL Secuencia('seq_topico', 1);
-CALL Secuencia('seq_contenido', 1);
-CALL Secuencia('seq_feedback', 1);
-
 
 DROP TRIGGER IF EXISTS NuevoTopico;
 DELIMITER //
 CREATE TRIGGER NuevoTopico BEFORE INSERT ON Topico
 FOR EACH ROW BEGIN
-SET NEW.id = (SELECT NextVal('seq_topico'));
-UPDATE ____topico SET id_uni=NEW.id_uni,id=NEW.id;
+DECLARE aux_id INT(10) UNSIGNED;
+DECLARE aux_pos1 INT(10) UNSIGNED;
+DECLARE aux_pos2 INT(10) UNSIGNED;
+SELECT COUNT(*) INTO aux_id FROM Topico WHERE (id_uni = NEW.id_uni);
+SELECT MAX(pos) INTO aux_pos1 FROM Topico WHERE (id_uni = NEW.id_uni);
+SELECT IFNULL(aux_pos1,0) INTO aux_pos2;
+SET NEW.id = (aux_id+1);
+SET NEW.pos = (aux_pos2+1);
 END //
 DELIMITER ;
 
@@ -156,8 +129,14 @@ DROP TRIGGER IF EXISTS NuevoContenido;
 DELIMITER //
 CREATE TRIGGER NuevoContenido BEFORE INSERT ON Contenido
 FOR EACH ROW BEGIN
-SET NEW.id = (SELECT NextVal('seq_contenido'));
-UPDATE ____contenido SET id_uni=NEW.id_uni,id_top=NEW.id_top,id=NEW.id;
+DECLARE aux_id INT(10) UNSIGNED;
+DECLARE aux_pos1 INT(10) UNSIGNED;
+DECLARE aux_pos2 INT(10) UNSIGNED;
+SELECT COUNT(*) INTO aux_id FROM Contenido WHERE (id_uni = NEW.id_uni AND id_top = NEW.id_top);
+SELECT MAX(pos) INTO aux_pos1 FROM Contenido WHERE (id_uni = NEW.id_uni AND id_top = NEW.id_top);
+SELECT IFNULL(aux_pos1,0) INTO aux_pos2;
+SET NEW.id = (aux_id+1);
+SET NEW.pos = (aux_pos2+1);
 END //
 DELIMITER ;
 
@@ -165,7 +144,9 @@ DROP TRIGGER IF EXISTS NuevoFeedback;
 DELIMITER //
 CREATE TRIGGER NuevoFeedback BEFORE INSERT ON Feedback
 FOR EACH ROW BEGIN
-SET NEW.id = (SELECT NextVal('seq_feedback'));
+DECLARE aux_id INT(10) UNSIGNED;
+SELECT COUNT(*) INTO aux_id FROM Contenido WHERE (uni_id = NEW.uni_id AND top_id = NEW.top_id AND com_id = NEW.com_id AND rol = NEW.rol);
+SET NEW.id = (aux_id+1);
 END //
 DELIMITER ;
 
@@ -177,9 +158,4 @@ SELECT * FROM Topico WHERE visible = 0 OR id_uni IN (SELECT id FROM view_unidade
 
 CREATE VIEW view_contenidos_borrados AS
 SELECT * FROM Contenido WHERE visible = 0 OR id_top IN (SELECT id FROM view_topicos_borrados);
-
-INSERT INTO Perfil (nombre,cantidad) VALUES ('Adaptador', 0);
-INSERT INTO Perfil (nombre,cantidad) VALUES ('Asimilador', 0);
-INSERT INTO Perfil (nombre,cantidad) VALUES ('Convergente', 0);
-INSERT INTO Perfil (nombre,cantidad) VALUES ('Divergente', 0);
 
