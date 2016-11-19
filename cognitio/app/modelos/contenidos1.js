@@ -1,10 +1,17 @@
-exports.lista_unidades = function(next) {
+exports.lista_unidades = function(visi, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
 			
         }
         else {
-			conexion.query("SELECT id,titulo FROM Unidad WHERE visible=1", function(err, rows) {
+			var consulta;
+			if(visi==false) {
+				consulta = "SELECT id,titulo FROM Unidad";
+			}
+			else {
+				consulta = "SELECT id,titulo FROM Unidad WHERE visible=1";
+			}
+			conexion.query(consulta, function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,null);
@@ -18,13 +25,20 @@ exports.lista_unidades = function(next) {
 	});
 };
 
-exports.lista_unidad_topico = function(id_uni, next) {
+exports.lista_unidad_topico = function(visi, id_uni, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
 			
         }
         else {
-			conexion.query("SELECT id,titulo FROM Topico WHERE visible=1 && id_uni=?", id_uni, function(err, rows) {
+			var consulta;
+			if(visi==false) {
+				consulta = "SELECT id,titulo FROM Topico WHERE visible=1 && id_uni=?";
+			}
+			else {
+				consulta = "SELECT id,titulo FROM Topico WHERE id_uni=?";
+			}
+			conexion.query(consulta, [id_uni], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,null);

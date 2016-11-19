@@ -4,7 +4,7 @@ app.get('/unidades', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var unidades = require('./modelos/contenidos1');
-		unidades.lista_unidades(function(err,uns) {
+		unidades.lista_unidades(true,function(err,uns) {
 			if(err) {
 				res.json({exito:false});
 			}
@@ -22,7 +22,7 @@ app.get('/unidad_topicos/:uni',function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var unidades = require('./modelos/contenidos1');
-		unidades.lista_unidad_topico(req.params.uni, function(err,tops) {
+		unidades.lista_unidad_topico(true,req.params.uni, function(err,tops) {
 			if(err) {
 				res.json({exito:false});
 			}
@@ -46,7 +46,11 @@ app.get('/unidad_top_con/:uni/:top',function(req,res) {
 				res.json({exito:false});
 			}
 			else {
-				res.json({exito:true,contenidos:con});
+				var back = {};
+				for(var i=0;i<con.length;i++) {
+					back[i] = con[i];
+				}
+				res.json({exito:true,contenidos:back});
 			}
 		});
 	}

@@ -17,11 +17,11 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		
 		getUnidades : function() {
-			return $http.get('/main/unidades');
+			return $http.get('/prof_panel/unidades');
 		},
 		cargarUnidad : function(id) {
 			var d = $q.defer();
-			$http.get('/main/unidad_topicos/'+id).then(function(data){
+			$http.get('/prof_panel/unidad_topicos/'+id).then(function(data){
 				d.resolve(data);
 			});
 			return d.promise;

@@ -80,10 +80,6 @@ app.post('/uploadContents', function(req,res) {
 				return res.json({exito:false,mensaje:'Algo salió mal'});
 			} 
 			else {
-				/*console.log(req.body.tipo);
-				console.log(req.body.unidad);
-				console.log(req.body.topico);
-				console.log(req.body.contenidos);*/
 				for(var llave in req.body.contenidos) {
 					if(req.body.contenidos[llave].etiqueta == -1) {
 						return res.json({exito:false,mensaje:'Uno de los contenidos no tiene etiqueta.'});
@@ -97,12 +93,51 @@ app.post('/uploadContents', function(req,res) {
 					if(c==false) {
 						return res.json({exito:false,mensaje:'Algo salió mal'});
 					}
+					else {
+						return res.json({exito:true});
+					}
 				});
 			}
 		}
 	}
 	else {
 		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
+app.get('/unidades', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		unidades.lista_unidades(false,function(err,uns) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,unidades:uns});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/unidad_topicos/:uni',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		unidades.lista_unidad_topico(false,req.params.uni, function(err,tops) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,topicos:tops});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
 	}
 });
 

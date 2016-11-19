@@ -39,8 +39,22 @@
 		</div>
 	</nav>
 	<div id="page-wrapper">
-		<div class="row">
-			<h1 class="page-header">{{top_activo}}</h1>
+		<div class="page-header">
+			<div class="row">
+				<div class="col-md-12">
+					<h2>{{top_activo}}</h2>
+				</div>
+			</div>
+		</div>
+		<div ng-repeat="(llave, valor) in contenidos">
+			<div class="row" >
+				<div class="col-md-12">
+					<h2><small>{{contenidos[llave].titulo}}</small></h2>
+				</div>
+			</div>
+			<div class="row">
+				<div ta-bind ng-model="contenidos[llave].info"></div>
+			</div>
 		</div>
 	</div>
 </div>

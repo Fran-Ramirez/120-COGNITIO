@@ -3,21 +3,27 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 		if(res.data.exito == -1) {
 			$location.url('/');
 		}
-		if(res.data.test == false) {
-			$location.url('/test');
-		}
-	});
-	servicioPrincipal.getUnidades().then(function(res) {
-		if(res.data.exito == false) {
-			$location.url('/');
-		}
 		else {
-			$scope.unidades = res.data.unidades;
-			$scope.uni_top = {};
-			$scope.uni_top_con = {};
+			if(res.data.test == false) {
+				$location.url('/test');
+			}
+			else {
+				$scope.top_activo = "";
+				$scope.contenidos = [];
+				servicioPrincipal.getUnidades().then(function(res) {
+					if(res.data.exito == false) {
+						$location.url('/main');
+					}
+					else {
+						$scope.unidades = res.data.unidades;
+						$scope.uni_top = {};
+						$scope.uni_top_con = {};
+					}
+				});
+			}
 		}
 	});
-	$scope.top_activo = "";
+	
 	$scope.logout = function() {
 		servicioPrincipal.logout().then(function(res) {
 			if(res.data.exito == true) {
@@ -26,14 +32,16 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 		});
 	};
 	$scope.cargarUnidad = function(id_uni) {
-		servicioPrincipal.cargarUnidad(id_uni).then(function(res) {
-			if(res.data.exito == false) {
-				$location.url('/');
-			}
-			else {
-				$scope.uni_top[id_uni] = res.data.topicos;
-			}
-		});
+		if($scope.uni_top.hasOwnProperty(id_uni) == false) {
+			servicioPrincipal.cargarUnidad(id_uni).then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/main');
+				}
+				else {
+					$scope.uni_top[id_uni] = res.data.topicos;
+				}
+			});
+		}
 	};
 	$scope.cargarContenidos = function(id_uni,id_top) {
 		servicioPrincipal.cargarContenido(id_uni,id_top).then(function(res) {
@@ -45,11 +53,12 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 				$scope.uni_top_con[id_uni][id_top]=res.data.contenidos;
 				for(var i=0; i<$scope.uni_top[id_uni].length;i++) {
 					if($scope.uni_top[id_uni][i].id == id_top) {
-						console.log($scope.uni_top[id_uni][i]);
 						$scope.top_activo = $scope.uni_top[id_uni][i].titulo;
 						break;
 					}
 				}
+				$scope.contenidos = res.data.contenidos;
+				
 			}
 		});
 	};
