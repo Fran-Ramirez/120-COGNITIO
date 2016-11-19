@@ -28,6 +28,9 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		getEtiquetas : function() {
 			return $http.get('/prof_panel/etiquetas_contenido');
+		},
+		subirContenidos : function(datos) {
+			return $http.post('/prof_panel/uploadContents', datos);
 		}
 	}
 }]);

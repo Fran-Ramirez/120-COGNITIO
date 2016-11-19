@@ -124,7 +124,8 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 			servicioProf.cargarUnidad($scope.todos.unidad).then(function(res){
 				if(res.data.exito==true) {
 					$scope.topicos = res.data.topicos;
-					$scope.todos.topico = $scope.topicos[0].id;
+					$scope.topicos.push({id:-1,titulo:"Nuevo topico"});
+					$scope.todos.topico = -1;
 				}
 			});
 		}
@@ -155,7 +156,7 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 	$scope.delContenido = function(id_marcada) {
 		ngDialog.open({
 			template:'\
-				<p>?Estás seguro que quieres eliminar esta vista?</p>\
+				<p>¿Estás seguro que quieres eliminar esta vista?</p>\
 				<div class="ngdialog-buttons">\
 					<button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(0)">No</button>\
 					<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog(1)">Sí</button>\
@@ -164,10 +165,89 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 			plain: true
 		}).closePromise.then(function(data) {
 			if(data.value == 1) {
-				$scope.contenido.splice(id_marcada, 1);
+				console.log(id_marcada);
+				delete $scope.contenido[id_marcada];
 				console.log($scope.contenido);
 			}
 		});
+	};
+	$scope.submit = function() {
+		if($scope.todos.unidad == -1) {
+			ngDialog.open({
+				template:'views/prof/dialog_un_to.html',
+				className: 'ngdialog-theme-default'
+			}).closePromise.then(function(data) {
+				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+					console.log(data.value);
+					if(data.value.unidad.titulo.length >= 1 && data.value.unidad.descripcion.length >= 1 && data.value.topico.titulo.length >= 1 && data.value.topico.descripcion.length >= 1) {
+						var datos_enviar = {
+							tipo:-2,
+							unidad:data.value.unidad,
+							topico:data.value.topico,
+							contenidos:$scope.contenido
+						};
+					}
+				}
+			});
+		}
+		else if($scope.todos.unidad != -1 && $scope.todos.topico == -1) {
+			ngDialog.open({
+				template:'views/prof/dialog_to.html',
+				className: 'ngdialog-theme-default'
+			}).closePromise.then(function(data) {
+				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+					if(data.value.topico.titulo.length >= 1 && data.value.topico.descripcion.length >= 1) {
+						console.log(data);
+						var datos_enviar = {
+							tipo:-1,
+							unidad:$scope.todos.unidad,
+							topico:data.value.topico,
+							contenidos:$scope.contenido
+						};
+					}
+				}
+			});
+		}
+		else {
+			var tit_uni;
+			var tit_top;
+			for(var i=0; i<$scope.unidades.length;i++) {
+				if($scope.unidades[i].id == $scope.todos.unidad) {
+					tit_uni = $scope.unidades[i].titulo;
+					break;
+				}
+			}
+			for(var i=0; i<$scope.topicos.length;i++) {
+				if($scope.topicos[i].id == $scope.todos.topico) {
+					tit_top = $scope.topicos[i].titulo;
+					break;
+				}
+			}
+			ngDialog.open({
+				template:'\
+					<p>Estás a punto de subir todos estos contenidos al topico "'+tit_top+'"\
+					de la unidad "'+tit_uni+'"</p>\
+					<p>Al hacer click sobre \'Aceptar\' subirás todos estos contenidos a la plataforma.</p>\
+					<div class="ngdialog-buttons">\
+						<button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(0)">Cancelar</button>\
+						<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog(1)">Aceptar</button>\
+					</div>',
+				className: 'ngdialog-theme-default',
+				plain: true
+			}).closePromise.then(function(data) {
+				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+					var datos_enviar = {
+						tipo:0,
+						unidad:$scope.todos.unidad,
+						topico:$scope.todos.topico,
+						contenidos:$scope.contenido
+					};
+					servicioProf.subirContenidos(datos_enviar).then(function(res) {
+						console.log(res.data);
+					});
+				}
+			});
+		}
 	};
 	
 }]);

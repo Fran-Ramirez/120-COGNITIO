@@ -1,0 +1,60 @@
+<style>
+	textarea{
+		resize:none;
+	}
+</style>
+<form ng-submit="submit_uni_to()">
+	<div class="row">
+		<div class="col-md-12">
+			<p>Estás a punto de crear una nueva unidad y tópico
+			escribe un nombre y descripción para ambas.</p>
+			<p>Si no querías hacer esto cierra el dialogo y escoge la 
+			unidad a la que pertenecen estos contenidos.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			Unidad
+		</div>
+		<div class="col-md-8">
+			<input class="form-control" type="text" ng-model="dialogo.unidad">
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-12">
+			<textarea class="form-control" maxlength="140" ng-model="dialogo.d_unidad"></textarea>
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-4">
+			<label>Topico</label>
+		</div>
+		<div class="col-md-8">
+			<input class="form-control" type="text" ng-model="dialogo.topico">
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-12">
+			<textarea class="form-control" maxlength="140" ng-model="dialogo.d_topico"></textarea>
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-12">
+			<p>Al hacer click sobre 'Aceptar' subirás todos estos contenidos a la plataforma.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<button type="button" class="btn btn-default btn-block" ng-click="closeThisDialog('$escape')">Cancelar</button>
+		</div>
+		<div class="col-md-6">
+			<button type="button" class="btn btn-primary btn-block" ng-click="closeThisDialog({unidad:{titulo:dialogo.unidad,descripcion:dialogo.d_unidad},topico:{titulo:dialogo.topico,descripcion:dialogo.d_topico}})">Aceptar</button>
+		</div>
+	</div>
+</form>

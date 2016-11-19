@@ -71,4 +71,19 @@ app.post('/subir_foto_contenido',function(req,res) {
 	}
 });
 
+app.post('/uploadContents', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(req.body.tipo==null || !req.body.unidad==null || !req.body.topico==null || !req.body.contenidos == null) {
+			res.json({exito:false,mensaje:'Algo salió mal'});
+		} 
+		else {
+			console.log(req.body.tipo);
+			console.log(req.body.unidad);
+			console.log(req.body.topico);
+			console.log(req.body.contenidos);
+		}
+	}
+});
+
 module.exports = app;
