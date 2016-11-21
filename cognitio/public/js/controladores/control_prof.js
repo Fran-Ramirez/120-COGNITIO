@@ -386,20 +386,33 @@ angular.module('mainApp').controller('panel_cont', ['$scope', 'ngDialog', '$loca
 			}
 		}
 	};
-	$scope.deleteUnidad = function(id_sel) {
-		var uni = [];
-		var ord = {};
-		for(var i=0;i<$scope.unidades.length;i++) {
-			if($scope.unidades[i].id!=id_sel) {
-				uni.push($scope.unidades[i]);
+	$scope.deleteUnidad = function(id_sel,modo) {
+		if(modo==true) {
+			var uni = [];
+			var ord = {};
+			for(var i=0;i<$scope.unidades.length;i++) {
+				if($scope.unidades[i].id!=id_sel) {
+					uni.push($scope.unidades[i]);
+				}
 			}
+			for(var i=0;i<uni.length;i++) {
+				ord[i] = uni[i].pos;
+			}
+			$scope.unidades = uni;
+			$scope.orden = ord;
 		}
-		for(var i=0;i<uni.length;i++) {
-			ord[i] = uni[i].pos;
+		else {
+			var pap = [];
+			for(var i=0;i<$scope.papelera.length;i++) {
+				if($scope.papelera[i].id!=id_sel) {
+					pap.push($scope.papelera[i]);
+				}
+			}
+			$scope.papelera = pap;
 		}
-		$scope.unidades = uni;
-		$scope.orden = ord;
+		
 		var botar = {
+			hacia:modo,
 			eliminar:id_sel
 		};
 		servicioProf.moverUnidadPapelera(botar).then(function(res) {
@@ -414,11 +427,24 @@ angular.module('mainApp').controller('panel_cont', ['$scope', 'ngDialog', '$loca
 				});
 			}
 			else {
-				servicioProf.getPunidades(1).then(function(res) {
-					if(res.data.exito != false) {
-						$scope.papelera = res.data.unidades;
-					}
-				});
+				if(modo==true) {
+					servicioProf.getPunidades(1).then(function(res) {
+						if(res.data.exito != false) {
+							$scope.papelera = res.data.unidades;
+						}
+					});
+				}
+				else {
+					servicioProf.getPunidades(0).then(function(res) {
+						if(res.data.exito != false) {
+							$scope.orden = {};
+							for(var i=0;i<res.data.unidades.length;i++) {
+								$scope.orden[i] = res.data.unidades[i].pos;
+							}
+							$scope.unidades = res.data.unidades;
+						}
+					});
+				}
 			}
 		});
 	};
@@ -583,20 +609,32 @@ angular.module('mainApp').controller('panel_cont_un', ['$scope', 'ngDialog', '$l
 			}
 		});
 	};
-	$scope.deleteTopico = function(id_sel) {
-		var top = [];
-		var ord = {};
-		for(var i=0;i<$scope.topicos.length;i++) {
-			if($scope.topicos[i].id!=id_sel) {
-				top.push($scope.topicos[i]);
+	$scope.deleteTopico = function(modo, id_sel) {
+		if(modo) {
+			var top = [];
+			var ord = {};
+			for(var i=0;i<$scope.topicos.length;i++) {
+				if($scope.topicos[i].id!=id_sel) {
+					top.push($scope.topicos[i]);
+				}
 			}
+			for(var i=0;i<top.length;i++) {
+				ord[i] = top[i].pos;
+			}
+			$scope.topicos = top;
+			$scope.orden = ord;
 		}
-		for(var i=0;i<top.length;i++) {
-			ord[i] = top[i].pos;
+		else {
+			var pap = [];
+			for(var i=0;i<$scope.papelera.length;i++) {
+				if($scope.papelera[i].id!=id_sel) {
+					pap.push($scope.papelera[i]);
+				}
+			}
+			$scope.papelera = pap;
 		}
-		$scope.topicos = top;
-		$scope.orden = ord;
 		var botar = {
+			hacia:modo,
 			eliminar_uni:$scope.id_uni,
 			eliminar_top:id_sel
 		};
@@ -612,11 +650,24 @@ angular.module('mainApp').controller('panel_cont_un', ['$scope', 'ngDialog', '$l
 				});
 			}
 			else {
-				servicioProf.getPtopicos($scope.id_uni,1).then(function(res) {
-					if(res.data.exito != false) {
-						$scope.papelera = res.data.topicos;
-					}
-				});
+				if(modo) {
+					servicioProf.getPtopicos($scope.id_uni,1).then(function(res) {
+						if(res.data.exito != false) {
+							$scope.papelera = res.data.topicos;
+						}
+					});
+				}
+				else {
+					servicioProf.getPtopicos($scope.id_uni,0).then(function(res) {
+						if(res.data.exito != false)  {
+							$scope.orden = {};
+							for(var i=0;i<res.data.topicos.length;i++) {
+								$scope.orden[i] = res.data.topicos[i].pos;
+							}
+							$scope.topicos = res.data.topicos;
+						}
+					});
+				}
 			}
 		});
 	};

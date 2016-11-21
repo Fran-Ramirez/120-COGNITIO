@@ -176,7 +176,7 @@ app.post('/a_papelera', function(req,res) {
 	if(sess.correo && sess.passwd) {
 		var desencriptar = require('./modelos/usuario').desencriptar;
 		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
-			if(req.body.eliminar==null) {
+			if(req.body.eliminar==null || req.body.hacia==null) {
 				return res.json({exito:false,mensaje:'Algo salió mal'});
 			} 
 			else {
@@ -185,7 +185,7 @@ app.post('/a_papelera', function(req,res) {
 					return res.json({exito:false});
 				}
 				var usuario = require('./modelos/panel_profe');
-				usuario.tirarPapelera(req.body.eliminar,function(c) {
+				usuario.tirarPapelera(req.body.hacia,req.body.eliminar,function(c) {
 					if(c==false) {
 						return res.json({exito:false,mensaje:'Algo salió mal'});
 					}
@@ -206,7 +206,7 @@ app.post('/a_papelera_top', function(req,res) {
 	if(sess.correo && sess.passwd) {
 		var desencriptar = require('./modelos/usuario').desencriptar;
 		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
-			if(req.body.eliminar_uni==null || req.body.eliminar_top==null) {
+			if(req.body.eliminar_uni==null || req.body.eliminar_top==null || req.body.hacia==null) {
 				return res.json({exito:false,mensaje:'Algo salió mal'});
 			} 
 			else {
@@ -215,7 +215,7 @@ app.post('/a_papelera_top', function(req,res) {
 					return res.json({exito:false});
 				}
 				var usuario = require('./modelos/panel_profe');
-				usuario.tirarPapeleraTop(req.body.eliminar_uni,req.body.eliminar_top,function(c) {
+				usuario.tirarPapeleraTop(req.body.hacia, req.body.eliminar_uni,req.body.eliminar_top,function(c) {
 					if(c==false) {
 						return res.json({exito:false,mensaje:'Algo salió mal'});
 					}

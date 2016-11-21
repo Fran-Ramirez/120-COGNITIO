@@ -110,13 +110,20 @@ exports.actualizarTopico = function(id, id_uni, titulo, descripcion, callback) {
 	});
 };
 
-exports.tirarPapelera = function(id, callback) {
+exports.tirarPapelera = function(hacia, id, callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
 			
         }
         else {
-			conexion.query("UPDATE Unidad SET visible=0 WHERE (id=?)",[id], function(err, rows) {
+			var consulta;
+			if(hacia) {
+				consulta = "UPDATE Unidad SET visible=0 WHERE (id=?)";
+			}
+			else {
+				consulta = "UPDATE Unidad SET visible=1 WHERE (id=?)";
+			}
+			conexion.query(consulta ,[id], function(err, rows) {
 				if(err) {
 					conexion.release();
 					callback(false);
@@ -129,13 +136,20 @@ exports.tirarPapelera = function(id, callback) {
 		}
 	});
 };
-exports.tirarPapeleraTop = function(id_uni, id, callback) {
+exports.tirarPapeleraTop = function(hacia, id_uni, id, callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
 			
         }
         else {
-			conexion.query("UPDATE Topico SET visible=0 WHERE (id=? && id_uni=?)",[id,id_uni], function(err, rows) {
+			var consulta;
+			if(hacia) {
+				consulta = "UPDATE Topico SET visible=0 WHERE (id=? && id_uni=?)";
+			}
+			else {
+				consulta = "UPDATE Topico SET visible=1 WHERE (id=? && id_uni=?)";
+			}
+			conexion.query(consulta ,[id,id_uni], function(err, rows) {
 				if(err) {
 					conexion.release();
 					callback(false);
