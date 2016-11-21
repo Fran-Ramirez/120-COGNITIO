@@ -23,7 +23,7 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 			}
 		}
 	});
-	
+
 	$scope.logout = function() {
 		servicioPrincipal.logout().then(function(res) {
 			if(res.data.exito == true) {
@@ -58,7 +58,7 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 					}
 				}
 				$scope.contenidos = res.data.contenidos;
-				
+
 			}
 		});
 	};
@@ -95,7 +95,7 @@ angular.module('mainApp').controller('controlTest',['$scope','$rootScope','$loca
 							  {"id":"CA_2","texto":"confio en mi intuicion y sentimientos"},
 							  {"id":"EA_2","texto":"trabajo duro para hacer lograr las cosas"}],
 				"boton":true
-							  
+
 			},
 			{
 				"frase":"Cuando estoy aprendiendo...",

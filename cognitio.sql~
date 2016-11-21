@@ -6,7 +6,7 @@ cantidad INT(10)
 CREATE TABLE Estudiante (
 rol INT(10) UNSIGNED PRIMARY KEY,
 dv CHAR(1) NOT NULL,
-perfil_id INT(10) UNSIGNED DEFAULT 2,
+perfil_id INT(10) UNSIGNED NULL,
 nombre CHAR(20) NULL,
 apellido1 CHAR(20) NULL,
 apellido2 CHAR(20) NULL,

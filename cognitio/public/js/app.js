@@ -21,7 +21,8 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 						deferred.resolve();
 					}
 					else {
-						document.execCommand('insertImage', true, data.value);
+						var ins = '<img class="img-responsive" src="'+data.value+'">';
+						document.execCommand('insertHTML', true, ins);
 						deferred.resolve();
 					}
 				});

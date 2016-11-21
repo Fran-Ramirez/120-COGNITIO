@@ -9,7 +9,7 @@ var encrypt = function(text){
   return crypted;
 };
 exports.encriptar = encrypt;
- 
+
 var decrypt = function(text){
   var decipher = crypto.createDecipher(algorithm,password)
   var dec = decipher.update(text,'hex','utf8')
@@ -21,7 +21,7 @@ exports.desencriptar = decrypt;
 exports.crear = function(usuario, pass, rol, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			var safe = encrypt(pass);
@@ -36,17 +36,17 @@ exports.crear = function(usuario, pass, rol, next) {
 					next(null,true);
 				}
 			});
-		}   
+		}
 	});
 };
 
 exports.ver = function(usuario, pass, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
-			conexion.query("SELECT correo,password,perfil_id FROM Estudiante WHERE correo=?", [usuario], function(err, rows) {
+			conexion.query("SELECT correo,password,test FROM Estudiante WHERE correo=?", [usuario], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,false);
@@ -75,7 +75,7 @@ exports.ver = function(usuario, pass, next) {
 exports.setTest = function(usuario,pass,resultado, callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			conexion.query("UPDATE Estudiante SET perfil_id=?,test=1 WHERE (correo=? AND password=?)", [resultado,usuario,pass], function(err,rows) {
@@ -102,7 +102,7 @@ exports.setTest = function(usuario,pass,resultado, callback) {
 exports.getTest = function(usuario,pass,callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			conexion.query("SELECT test FROM Estudiante WHERE (correo=? AND password=?)", [usuario,pass], function(err, rows){
