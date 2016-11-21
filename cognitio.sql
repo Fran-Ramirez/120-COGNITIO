@@ -114,13 +114,15 @@ DROP TRIGGER IF EXISTS NuevoTopico;
 DELIMITER //
 CREATE TRIGGER NuevoTopico BEFORE INSERT ON Topico
 FOR EACH ROW BEGIN
-DECLARE aux_id INT(10) UNSIGNED;
+DECLARE aux_id1 INT(10) UNSIGNED;
+DECLARE aux_id2 INT(10) UNSIGNED;
 DECLARE aux_pos1 INT(10) UNSIGNED;
 DECLARE aux_pos2 INT(10) UNSIGNED;
-SELECT COUNT(*) INTO aux_id FROM Topico WHERE (id_uni = NEW.id_uni);
+SELECT MAX(id) INTO aux_id1 FROM Topico WHERE (id_uni = NEW.id_uni);
 SELECT MAX(pos) INTO aux_pos1 FROM Topico WHERE (id_uni = NEW.id_uni);
 SELECT IFNULL(aux_pos1,0) INTO aux_pos2;
-SET NEW.id = (aux_id+1);
+SELECT IFNULL(aux_id1,0) INTO aux_id2;
+SET NEW.id = (aux_id2+1);
 SET NEW.pos = (aux_pos2+1);
 END //
 DELIMITER ;
@@ -129,14 +131,18 @@ DROP TRIGGER IF EXISTS NuevoContenido;
 DELIMITER //
 CREATE TRIGGER NuevoContenido BEFORE INSERT ON Contenido
 FOR EACH ROW BEGIN
-DECLARE aux_id INT(10) UNSIGNED;
+DECLARE aux_id1 INT(10) UNSIGNED;
+DECLARE aux_id2 INT(10) UNSIGNED;
 DECLARE aux_pos1 INT(10) UNSIGNED;
 DECLARE aux_pos2 INT(10) UNSIGNED;
-SELECT COUNT(*) INTO aux_id FROM Contenido WHERE (id_uni = NEW.id_uni AND id_top = NEW.id_top);
+SELECT MAX(id) INTO aux_id1 FROM Contenido WHERE (id_uni = NEW.id_uni AND id_top = NEW.id_top);
 SELECT MAX(pos) INTO aux_pos1 FROM Contenido WHERE (id_uni = NEW.id_uni AND id_top = NEW.id_top);
 SELECT IFNULL(aux_pos1,0) INTO aux_pos2;
-SET NEW.id = (aux_id+1);
+SELECT IFNULL(aux_id1,0) INTO aux_id2;
+SET NEW.id = (aux_id2+1);
+IF (NEW.pos IS NULL) THEN
 SET NEW.pos = (aux_pos2+1);
+END IF;
 END //
 DELIMITER ;
 
@@ -144,9 +150,11 @@ DROP TRIGGER IF EXISTS NuevoFeedback;
 DELIMITER //
 CREATE TRIGGER NuevoFeedback BEFORE INSERT ON Feedback
 FOR EACH ROW BEGIN
-DECLARE aux_id INT(10) UNSIGNED;
-SELECT COUNT(*) INTO aux_id FROM Contenido WHERE (uni_id = NEW.uni_id AND top_id = NEW.top_id AND com_id = NEW.com_id AND rol = NEW.rol);
-SET NEW.id = (aux_id+1);
+DECLARE aux_id1 INT(10) UNSIGNED;
+DECLARE aux_id2 INT(10) UNSIGNED;
+SELECT MAX(id) INTO aux_id1 FROM Feedback WHERE (uni_id = NEW.uni_id AND top_id = NEW.top_id AND com_id = NEW.com_id AND rol = NEW.rol);
+SELECT IFNULL(aux_id1,0) INTO aux_id2;
+SET NEW.id = (aux_id2+1);
 END //
 DELIMITER ;
 

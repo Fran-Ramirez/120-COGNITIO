@@ -38,12 +38,12 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 		templateUrl: 'views/auth/inicio.html',
 		controller: 'controllogin'
 	})
-	
+
 	.when('/registro', {
 		templateUrl: 'views/auth/registro.html',
 		controller: 'controllogin'
 	})
-	
+
 	.when('/main', {
 		templateUrl: 'views/main/main.html',
 		controller: 'controlMain',
@@ -81,7 +81,7 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 					}]
 			}
 	})
-	
+
 	.when('/profe_panel', {
 		templateUrl: 'views/prof/panel_contenido.html',
 		controller: 'panel_cont',
@@ -91,7 +91,7 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 					}]
 			}
 	})
-	
+
 	.when('/profe_panel_un', {
 		templateUrl: 'views/prof/panel_contenido_un.html',
 		controller: 'panel_cont_un',
@@ -101,7 +101,27 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 					}]
 			}
 	})
-	
+
+	.when('/profe_panel_con', {
+		templateUrl: 'views/prof/panel_contenido_con.html',
+		controller: 'panel_cont_con',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+
+	.when('/profe_panel_con_con', {
+		templateUrl: 'views/prof/panel_contenido_con_con.html',
+		controller: 'panel_cont_con_con',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+
 	.when('/profe_feed', {
 		templateUrl: 'views/prof/profe_feed.html',
 		controller: 'main_prof',
