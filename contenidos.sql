@@ -24,10 +24,10 @@ INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (4,'Topico 1:Imanes','Prim
 INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (4,'Topico 2:Imanes','Segundo topico');
 INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (4,'Topico 3:Imanes','Tercero topico');
 
-INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('definicion matematica');
-INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('ejemplo grafico');
-INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('experimento');
-INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('definicion conceptual');
+INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('definicion matematica', 'contenido matematico bla bla');
+INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('ejemplo grafico', 'contenido con muchas imagenes bla bla');
+INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('experimento', 'descripcion de un experimento bla bla');
+INSERT INTO Etiqueta (nombre_etiqueta) VALUES ('definicion conceptual', 'contenido con mucho texto bla bla');
 
 INSERT INTO Perfil_Etiqueta (perfil_id,etiqueta_id) VALUES (1,1);
 INSERT INTO Perfil_Etiqueta (perfil_id,etiqueta_id) VALUES (2,2);

@@ -22,7 +22,7 @@ app.get('/unidad_topicos/:uni',function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var unidades = require('./modelos/contenidos1');
-		unidades.lista_unidad_topico(true,req.params.uni, function(err,tops) {
+		unidades.lista_unidad_topico(false,req.params.uni, function(err,tops) {
 			if(err) {
 				res.json({exito:false});
 			}

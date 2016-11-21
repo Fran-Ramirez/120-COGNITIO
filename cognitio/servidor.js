@@ -22,6 +22,7 @@ app.use('/textangular', express.static(__dirname + '/node_modules/textangular/di
 app.use('/ng-file-upload', express.static(__dirname + '/node_modules/ng-file-upload/dist/'));
 app.use('/ngDialog/css', express.static(__dirname + '/node_modules/ng-dialog/css/'));
 app.use('/ngDialog/js', express.static(__dirname + '/node_modules/ng-dialog/js/'));
+app.use('/angular-ui-sortable', express.static(__dirname + '/node_modules/angular-ui-sortable/dist/'));
 app.use(helmet());
 
 app.use(session({

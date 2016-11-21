@@ -312,7 +312,322 @@ angular.module('mainApp').controller('subir_cont', ['$scope', 'ngDialog', '$loca
 	
 }]);
 
-//subir__Imagen
+angular.module('mainApp').controller('panel_cont', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
+		}
+		else {
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+		/*[INICIO]---------------Listar unidades-------------*/
+			servicioProf.getPunidades(0).then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/');
+				}
+				else {
+					$scope.orden = {};
+					for(var i=0;i<res.data.unidades.length;i++) {
+						$scope.orden[i] = res.data.unidades[i].pos;
+					}
+					$scope.unidades = res.data.unidades;
+				}
+			});
+		/*[FIN]---------------Listar unidades-------------*/
+		/*[INICIO]---------------Listar papelera-------------*/
+			servicioProf.getPunidades(1).then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/');
+				}
+				else {
+					$scope.papelera = res.data.unidades;
+				}
+			});
+		/*[FIN]---------------Listar papelera-------------*/
+		/*[INICIO]---------------Variables-------------*/
+			$scope.bit_modo = false;
+		/*[FIN]---------------Variables-------------*/
+		}
+	});
+/*[FIN]----------inicializadores ^---------------*/
+	$scope.mostrarTopicos = function(id_sel, tit_id_sel) {
+		servicioProf.unindadAtopicos(id_sel, tit_id_sel);
+		$location.url('/profe_panel_un');
+	};
+	$scope.cambiarModo = function() {
+		if($scope.bit_modo) {
+			var datos_act = {
+				nu_unidades:$scope.unidades
+			};
+			servicioProf.reordenarUnidades(datos_act).then(function(res) {
+				if(res.data.exito == false)  {
+					ngDialog.open({
+						template:'<p>La nueva organización no fue guardada, intenta reordenar luego.</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+						className: 'ngdialog-theme-default',
+						plain:true
+					});
+				}
+			});
+		}
+		$scope.bit_modo = !$scope.bit_modo;
+	};
+	$scope.actualizarOrden = {
+		stop: function(e, ui) {
+			for (var i=0;i<$scope.unidades.length;i++) {
+				$scope.unidades[i].pos = $scope.orden[i];
+			}
+		}
+	};
+	$scope.deleteUnidad = function(id_sel) {
+		var uni = [];
+		var ord = {};
+		for(var i=0;i<$scope.unidades.length;i++) {
+			if($scope.unidades[i].id!=id_sel) {
+				uni.push($scope.unidades[i]);
+			}
+		}
+		for(var i=0;i<uni.length;i++) {
+			ord[i] = uni[i].pos;
+		}
+		$scope.unidades = uni;
+		$scope.orden = ord;
+		var botar = {
+			eliminar:id_sel
+		};
+		servicioProf.moverUnidadPapelera(botar).then(function(res) {
+			if(res.data.exito == false) {
+				ngDialog.open({
+					template:'<p>La unidad no pudo ser movida a la papelera, intentalo nuevamente.</p>\
+								<div class="ngdialog-buttons">\
+									<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+								</div>',
+					className: 'ngdialog-theme-default',
+					plain:true
+				});
+			}
+			else {
+				servicioProf.getPunidades(1).then(function(res) {
+					if(res.data.exito != false) {
+						$scope.papelera = res.data.unidades;
+					}
+				});
+			}
+		});
+	};
+	$scope.editarUnidad = function(id_sel,desc_sel,tit_sel) {
+		$scope.dialogo = {};
+		$scope.dialogo['e_desc_sel'] = desc_sel;
+		$scope.dialogo['e_tit_sel'] = tit_sel;
+		ngDialog.open({
+			template:'views/prof/dialog_un.html',
+			className: 'ngdialog-theme-default',
+			scope:$scope
+		}).closePromise.then(function(data) {
+			if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+				var upt_datos = {
+					id:id_sel,
+					titulo:data.value.unidad.titulo,
+					descripcion:data.value.unidad.descripcion
+				};
+				if(upt_datos.titulo.length>=1 && upt_datos.descripcion.length>=1) {
+					servicioProf.actualizarUnidad(upt_datos).then(function(res) {
+						if(res.data.exito == false) {
+							ngDialog.open({
+								template:'<p>La unidad no pudo ser modificada, intentalo nuevamente.</p>\
+											<div class="ngdialog-buttons">\
+												<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+											</div>',
+								className: 'ngdialog-theme-default',
+								plain:true
+							});
+						}
+						else {
+							for(var i=0;i<$scope.unidades.length;i++) {
+								if($scope.unidades[i].id == id_sel) {
+									$scope.unidades[i].titulo = upt_datos.titulo;
+									$scope.unidades[i].descripcion = upt_datos.descripcion;
+									break;
+								}
+							}
+						}
+					});
+				}
+			}
+		});
+	};
+}]);
+
+angular.module('mainApp').controller('panel_cont_un', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
+		}
+		else {
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+			var u_t = servicioProf.topicoDeUnidad();
+			$scope.id_uni = u_t.id;
+			$scope.titulo_unidad = u_t.titulo;
+			if($scope.id_uni == null) {
+				$location.url('/profe_panel');
+			}
+			else {
+				
+			/*[INICIO]---------------Listar topicos-------------*/
+				servicioProf.getPtopicos($scope.id_uni,0).then(function(res) {
+					if(res.data.exito == false) {
+						$location.url('/');
+					}
+					else {
+						$scope.orden = {};
+						for(var i=0;i<res.data.topicos.length;i++) {
+							$scope.orden[i] = res.data.topicos[i].pos;
+						}
+						$scope.topicos = res.data.topicos;
+					}
+				});
+			/*[FIN]---------------Listar unidades-------------*/
+			/*[INICIO]---------------Listar papelera-------------*/
+				servicioProf.getPtopicos($scope.id_uni,1).then(function(res) {
+					if(res.data.exito == false) {
+						$location.url('/');
+					}
+					else {
+						$scope.papelera = res.data.topicos;
+					}
+				});
+			/*[FIN]---------------Listar papelera-------------*/
+			/*[INICIO]---------------Variables-------------*/
+				$scope.bit_modo = false;
+			/*[FIN]---------------Variables-------------*/
+			}
+		}
+	});
+/*[FIN]----------inicializadores ^---------------*/
+	$scope.cambiarModo = function() {
+		if($scope.bit_modo) {
+			var datos_act = {
+				nu_id_uni:$scope.id_uni,
+				nu_topicos:$scope.topicos
+			};
+			servicioProf.reordenarTopicos(datos_act).then(function(res) {
+				if(res.data.exito == false)  {
+					ngDialog.open({
+						template:'<p>La nueva organización no fue guardada, intenta reordenar luego.</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+						className: 'ngdialog-theme-default',
+						plain:true
+					});
+				}
+			});
+		}
+		$scope.bit_modo = !$scope.bit_modo;
+	};
+	$scope.mostrarContenidos = function(id_sel) {
+		
+	};
+	$scope.editarTopico = function(id_sel,desc_sel,tit_sel) {
+		$scope.dialogo = {};
+		$scope.dialogo['e_desc_sel'] = desc_sel;
+		$scope.dialogo['e_tit_sel'] = tit_sel;
+		ngDialog.open({
+			template:'views/prof/dialog_to2.html',
+			className: 'ngdialog-theme-default',
+			scope:$scope
+		}).closePromise.then(function(data) {
+			if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+				var upt_datos = {
+					id:id_sel,
+					id_id_uni:$scope.id_uni,
+					titulo:data.value.topico.titulo,
+					descripcion:data.value.topico.descripcion
+				};
+				if(upt_datos.titulo.length>=1 && upt_datos.descripcion.length>=1) {
+					servicioProf.actualizarTopico(upt_datos).then(function(res) {
+						if(res.data.exito == false) {
+							ngDialog.open({
+								template:'<p>El tópico no pudo ser modificado, intentalo nuevamente.</p>\
+											<div class="ngdialog-buttons">\
+												<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+											</div>',
+								className: 'ngdialog-theme-default',
+								plain:true
+							});
+						}
+						else {
+							for(var i=0;i<$scope.topicos.length;i++) {
+								if($scope.topicos[i].id == id_sel) {
+									$scope.topicos[i].titulo = upt_datos.titulo;
+									$scope.topicos[i].descripcion = upt_datos.descripcion;
+									break;
+								}
+							}
+						}
+					});
+				}
+			}
+		});
+	};
+	$scope.deleteTopico = function(id_sel) {
+		var top = [];
+		var ord = {};
+		for(var i=0;i<$scope.topicos.length;i++) {
+			if($scope.topicos[i].id!=id_sel) {
+				top.push($scope.topicos[i]);
+			}
+		}
+		for(var i=0;i<top.length;i++) {
+			ord[i] = top[i].pos;
+		}
+		$scope.topicos = top;
+		$scope.orden = ord;
+		var botar = {
+			eliminar_uni:$scope.id_uni,
+			eliminar_top:id_sel
+		};
+		servicioProf.moverTopicoPapelera(botar).then(function(res) {
+			if(res.data.exito == false) {
+				ngDialog.open({
+					template:'<p>El tópico no pudo ser movido a la papelera, intentalo nuevamente.</p>\
+								<div class="ngdialog-buttons">\
+									<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+								</div>',
+					className: 'ngdialog-theme-default',
+					plain:true
+				});
+			}
+			else {
+				servicioProf.getPtopicos($scope.id_uni,1).then(function(res) {
+					if(res.data.exito != false) {
+						$scope.papelera = res.data.topicos;
+					}
+				});
+			}
+		});
+	};
+	$scope.actualizarOrden = {
+		stop: function(e, ui) {
+			for (var i=0;i<$scope.topicos.length;i++) {
+				$scope.topicos[i].pos = $scope.orden[i];
+			}
+		}
+	};
+}]);
 
 angular.module('mainApp').controller('subir__Imagen', ['$scope', 'ngDialog', 'Upload', function($scope,ngDialog,Upload) {
 	$scope.image = 'imagenes/default.jpg';

@@ -43,7 +43,7 @@
 										<select class="form-control" ng-model='todos.topico' ng-options='t.id as t.titulo for t in topicos'></select>
 									</div>
 								</div>
-								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+								<br>
 							<!----------------------------------------PARTE DINAMICA------------------------------>
 								<div class = "row" ng-repeat="(llave, valor) in contenido" ng-init='indexContenido = $index'>
 									<div class="col-md-12">
@@ -74,7 +74,7 @@
 														<select class="form-control" ng-model='contenido[llave].etiqueta' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta(llave)"></select>
 													</div>
 												</div>
-												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+												<br>
 												<div class="row">
 													<div class="col-md-12">
 														<div class="alert alert-info">
@@ -82,7 +82,6 @@
 														</div>
 													</div>
 												</div>
-												<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
 												<div class="row">
 													<div class="col-md-12">
 														<div text-angular ng-model="contenido[llave].texto"></div>
@@ -93,13 +92,13 @@
 									</div>
 								</div>
 							<!--------------------------------------------FIN PARTE DINAMICA--------------------------------->
-								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+								<br>
 								<div class = "row">
 									<div class="col-md-4">
 										<button type="button" class="btn btn-warning btn-block" ng-click="addContenido()">Otro contenido</button>
 									</div>
 								</div>
-								<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+								<br>
 								<div class = "row">
 									<div class="col-md-4">
 										<button type="button" class="btn btn-primary btn-block">Borrador</button>

@@ -18,6 +18,191 @@ var decrypt = function(text){
 };
 exports.desencriptar = decrypt;
 
+exports.updateUnidades = function(unidades,callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			var pendientes = unidades.length;
+			conexion.query("START TRANSACTION");
+			for(var i=0; i<unidades.length;i++) {
+				conexion.query("UPDATE Unidad SET pos=? WHERE (id=?)",[unidades[i].pos,unidades[i].id], function(err, rows) {
+					if(err) {
+						conexion.query("ROLLBACK");
+						conexion.release();
+						callback(false);
+					}
+					else if(0 == --pendientes) {
+						conexion.query("COMMIT");
+						conexion.release();
+						callback(true);
+					}
+				});
+			}
+		}
+	});
+};
+
+exports.updateTopicos = function(unidad, topicos,callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			var pendientes = topicos.length;
+			conexion.query("START TRANSACTION");
+			for(var i=0; i<topicos.length;i++) {
+				conexion.query("UPDATE Topico SET pos=? WHERE (id=? AND id_uni=?)",[topicos[i].pos,topicos[i].id, unidad], function(err, rows) {
+					if(err) {
+						conexion.query("ROLLBACK");
+						conexion.release();
+						callback(false);
+					}
+					else if(0 == --pendientes) {
+						conexion.query("COMMIT");
+						conexion.release();
+						callback(true);
+					}
+				});
+			}
+		}
+	});
+};
+
+exports.actualizarUnidad = function(id, titulo, descripcion, callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("UPDATE Unidad SET titulo=?, descripcion=? WHERE (id=?)",[titulo, descripcion, id], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+
+exports.actualizarTopico = function(id, id_uni, titulo, descripcion, callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("UPDATE Topico SET titulo=?, descripcion=? WHERE (id=? AND id_uni=?)",[titulo, descripcion, id, id_uni], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+
+exports.tirarPapelera = function(id, callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("UPDATE Unidad SET visible=0 WHERE (id=?)",[id], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+exports.tirarPapeleraTop = function(id_uni, id, callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			conexion.query("UPDATE Topico SET visible=0 WHERE (id=? && id_uni=?)",[id,id_uni], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+
+exports.papeleraka = function(pape, next) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			var consulta;
+			if(pape==false) {
+				consulta = "SELECT id,titulo,descripcion,pos FROM Unidad WHERE visible=1 ORDER BY pos";
+			}
+			else {
+				consulta = "SELECT id,titulo FROM Unidad WHERE visible=0 ORDER BY pos";
+			}
+			conexion.query(consulta, function(err, rows) {
+				if (err) {
+					conexion.release();
+					next(err,null);
+				}
+				else {
+					conexion.release();
+					next(null,rows);
+				}
+			});
+		}   
+	});
+};
+
+exports.papelera_top_ka = function(uni, pape, next) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+			
+        }
+        else {
+			var consulta;
+			if(pape==false) {
+				consulta = "SELECT id,titulo,descripcion,pos FROM Topico WHERE (visible=1 AND id_uni=?) ORDER BY pos";
+			}
+			else {
+				consulta = "SELECT id,titulo FROM Topico WHERE (visible=0 AND id_uni=?) ORDER BY pos";
+			}
+			conexion.query(consulta, [uni], function(err, rows) {
+				if (err) {
+					conexion.release();
+					next(err,null);
+				}
+				else {
+					conexion.release();
+					next(null,rows);
+				}
+			});
+		}   
+	});
+};
+
 exports.tipo_profe = function(usuario,pass,callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
@@ -58,7 +243,6 @@ exports.subir_contenido = function(tipo,unidad,topico,contenidos,callback) {
         else {
 			if(tipo==0) {
 				var pendientes = Object.keys(contenidos).length;
-				console.log(pendientes);
 				conexion.query("START TRANSACTION");
 				for(var llave in contenidos) {
 					conexion.query("INSERT INTO Contenido (id_uni,id_top,titulo,info,borrador,etiqueta_id) VALUES (?,?,?,?,0,?)",[unidad,topico,contenidos[llave].titulo,contenidos[llave].texto,contenidos[llave].etiqueta], function(err, rows) {

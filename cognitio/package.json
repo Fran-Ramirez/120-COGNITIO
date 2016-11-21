@@ -3,6 +3,9 @@
   "description": "plataforma de aprendizaje personalizado",
   "version": "1.0.0",
   "dependencies": {
+    "angular-dragdrop": "^1.0.13",
+    "angular-gridster": "^0.13.14",
+    "angular-ui-sortable": "^0.15.0",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "express-mysql-session": "^1.2.0",
@@ -11,8 +14,10 @@
     "method-override": "^2.3.6",
     "multer": "^1.2.0",
     "mysql": "^2.11.1",
+    "n": "^2.1.4",
     "ng-dialog": "^0.6.4",
     "ng-file-upload": "^12.2.13",
+    "ng-sortable": "^1.3.7",
     "oclazyload": "^1.0.9",
     "textangular": "^1.5.13"
   }

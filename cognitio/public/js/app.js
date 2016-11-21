@@ -1,4 +1,4 @@
-var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad','textAngular','ngDialog','ngFileUpload']);
+var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad','textAngular','ngDialog','ngFileUpload','ui.sortable']);
 app.config(['$routeProvider', '$locationProvider', '$provide', function($routeProvider, $locationProvider, $provide) {
 
 	$provide.decorator('taOptions',['taRegisterTool','$delegate','ngDialog', function(taRegisterTool,taOptions,ngDialog){
@@ -83,14 +83,25 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 	})
 	
 	.when('/profe_panel', {
-		templateUrl: 'views/prof/profe_panel.html',
-		controller: 'main_prof',
+		templateUrl: 'views/prof/panel_contenido.html',
+		controller: 'panel_cont',
 		resolve: {
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
 					}]
 			}
 	})
+	
+	.when('/profe_panel_un', {
+		templateUrl: 'views/prof/panel_contenido_un.html',
+		controller: 'panel_cont_un',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	
 	.when('/profe_feed', {
 		templateUrl: 'views/prof/profe_feed.html',
 		controller: 'main_prof',

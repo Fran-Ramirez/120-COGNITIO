@@ -1,0 +1,41 @@
+<style>
+	textarea{
+		resize:none;
+	}
+</style>
+<form ng-submit="actu_un()">
+	<div class="row">
+		<div class="col-md-12">
+			<p>Cambia el nombre de la unidad y su descripción.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<label>Unidad</label>
+		</div>
+		<div class="col-md-8">
+			<input class="form-control" placeholder="{{dialogo.e_tit_sel}}" type="text" ng-model="dialogo.unidad">
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-12">
+			<textarea class="form-control" placeholder="{{dialogo.e_desc_sel}}" maxlength="140" ng-model="dialogo.d_unidad"></textarea>
+		</div>
+	</div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<!--espacio--><div class = "row"><div class="col-md-12"><p> </p></div></div>
+	<div class="row">
+		<div class="col-md-12">
+			<p>Al hacer click sobre 'Aceptar' modificarás el nombre de la unidad.</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<button type="button" class="btn btn-default btn-block" ng-click="closeThisDialog('$escape')">Cancelar</button>
+		</div>
+		<div class="col-md-6">
+			<button type="button" class="btn btn-primary btn-block" ng-click="closeThisDialog({unidad:{titulo:dialogo.unidad,descripcion:dialogo.d_unidad}})">Aceptar</button>
+		</div>
+	</div>
+</form>

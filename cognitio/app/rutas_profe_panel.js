@@ -105,6 +105,202 @@ app.post('/uploadContents', function(req,res) {
 	}
 });
 
+app.post('/actuUni', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.id==null || req.body.titulo==null || req.body.descripcion==null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				
+				if(req.body.titulo.length < 1) {
+					return res.json({exito:false});
+				}
+				if(req.body.descripcion.length < 1) {
+					return res.json({exito:false});
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.actualizarUnidad(req.body.id,req.body.titulo,req.body.descripcion,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
+app.post('/actuTop', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.id==null || req.body.id_id_uni==null || req.body.titulo==null || req.body.descripcion==null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				
+				if(req.body.titulo.length < 1) {
+					return res.json({exito:false});
+				}
+				if(req.body.descripcion.length < 1) {
+					return res.json({exito:false});
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.actualizarTopico(req.body.id,req.body.id_id_uni,req.body.titulo,req.body.descripcion,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
+app.post('/a_papelera', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.eliminar==null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				
+				if(req.body.eliminar < 1) {
+					return res.json({exito:false});
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.tirarPapelera(req.body.eliminar,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
+app.post('/a_papelera_top', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.eliminar_uni==null || req.body.eliminar_top==null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				
+				if(req.body.eliminar_uni < 1 || req.body.eliminar_top < 1) {
+					return res.json({exito:false});
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.tirarPapeleraTop(req.body.eliminar_uni,req.body.eliminar_top,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
+app.post('/reordenarUnidades', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.nu_unidades==null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				for(var i=0; i<req.body.nu_unidades.length; i++) {
+					if(req.body.nu_unidades[i].id == -1) {
+						return res.json({exito:false});
+					}
+					else if(req.body.nu_unidades[i].pos < 1) {
+						return res.json({exito:false});
+					}
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.updateUnidades(req.body.nu_unidades,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+app.post('/reordenarTopicos', function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var desencriptar = require('./modelos/usuario').desencriptar;
+		if(desencriptar(sess.extra)=='@profesor.usm.cl') {
+			if(req.body.nu_topicos==null || req.body.nu_id_uni == null) {
+				return res.json({exito:false,mensaje:'Algo salió mal'});
+			} 
+			else {
+				if(req.body.nu_id_uni<1) {
+					return res.json({exito:false});
+				}
+				for(var i=0; i<req.body.nu_topicos.length; i++) {
+					if(req.body.nu_topicos[i].id == -1) {
+						return res.json({exito:false});
+					}
+					else if(req.body.nu_topicos[i].pos < 1) {
+						return res.json({exito:false});
+					}
+				}
+				var usuario = require('./modelos/panel_profe');
+				usuario.updateTopicos(req.body.nu_id_uni,req.body.nu_topicos,function(c) {
+					if(c==false) {
+						return res.json({exito:false,mensaje:'Algo salió mal'});
+					}
+					else {
+						return res.json({exito:true});
+					}
+				});
+			}
+		}
+	}
+	else {
+		res.json({exito:false,mensaje:'Algo salió mal'});
+	}
+});
+
 app.get('/unidades', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
@@ -115,6 +311,56 @@ app.get('/unidades', function(req, res) {
 			}
 			else {
 				res.json({exito:true,unidades:uns});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/filtro_papelera/:si', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/panel_profe');
+		var pap;
+		if(req.params.si == 1) {
+			pap = true;
+		}
+		else {
+			pap = false;
+		}
+		unidades.papeleraka(pap,function(err,uns) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,unidades:uns});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/filtro_papelera_tops/:uni/:si', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/panel_profe');
+		var pap;
+		if(req.params.si == 1) {
+			pap = true;
+		}
+		else {
+			pap = false;
+		}
+		unidades.papelera_top_ka(req.params.uni,pap,function(err,tops) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,topicos:tops});
 			}
 		});
 	}
