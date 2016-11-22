@@ -15,9 +15,7 @@
 							<button type="button" class="btn btn-default" ng-click='ir("/profe_subir_cont")'>Subir contenido</button>
 							<button type="button" class="btn btn-default" ng-click='ir("/profe_panel")'>Panel de control contenido</button>
 							<button type="button" class="btn btn-default" ng-click='ir("/profe_feed")'>Feedback</button>
-							<button type="button" class="btn btn-default" ng-click='ir("/prof_alertas")'>Alertas <span class="badge">{{alertas}}</span></button>
 							<button ng-repeat="e in extras" type="button" class="btn btn-default" ng-click='ir(e.fnc)'>{{e.txt}}</button>
-							<button type="button" class="btn btn-default" ng-click='ir("/prof_config")'>Configuración</button>
 							<button type="button" class="btn btn-default" ng-click='logout()'>Cerrar Sesión</button>
 						</div>
 					</div>
@@ -26,5 +24,3 @@
 		</div>
 	</div>
 </div>
-
-

@@ -1,7 +1,7 @@
 exports.lista_unidades = function(visi, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			var consulta;
@@ -21,14 +21,14 @@ exports.lista_unidades = function(visi, next) {
 					next(null,rows);
 				}
 			});
-		}   
+		}
 	});
 };
 
 exports.lista_unidad_topico = function(visi, id_uni, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			var consulta;
@@ -48,17 +48,17 @@ exports.lista_unidad_topico = function(visi, id_uni, next) {
 					next(null,rows);
 				}
 			});
-		}   
+		}
 	});
 };
 
 exports.lista_un_to_co = function(correo,id_uni,id_top,next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
-			conexion.query("select titulo,info,archivo from Contenido where id_uni=? and id_top=? and visible = 1 and etiqueta_id in (select etiqueta_id from Perfil_Etiqueta join Etiqueta on Perfil_Etiqueta.etiqueta_id = Etiqueta.id and Perfil_Etiqueta.perfil_id=(select perfil_id from Estudiante where correo=?)) ORDER BY pos", [id_uni, id_top,correo], function(err, rows) {
+			conexion.query("select titulo,info,archivo,id,id_uni,id_top from Contenido where id_uni=? and id_top=? and visible = 1 and etiqueta_id in (select etiqueta_id from Perfil_Etiqueta join Etiqueta on Perfil_Etiqueta.etiqueta_id = Etiqueta.id and Perfil_Etiqueta.perfil_id=(select perfil_id from Estudiante where correo=?)) ORDER BY pos", [id_uni, id_top,correo], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,null);
@@ -68,14 +68,14 @@ exports.lista_un_to_co = function(correo,id_uni,id_top,next) {
 					next(null,rows);
 				}
 			});
-		}   
+		}
 	});
 };
 
 exports.etiquetas = function(next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
 			conexion.query("select id,nombre_etiqueta,descripcion from Etiqueta", function(err, rows) {
@@ -88,6 +88,26 @@ exports.etiquetas = function(next) {
 					next(null,rows);
 				}
 			});
-		}   
+		}
+	});
+};
+exports.addFeedback= function(tipo,unidad,topico,contenido,comentario,rol,next) {
+	pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+			conexion.query("INSERT INTO Feedback (rol,calificacion,comentario,uni_id,top_id,com_id) VALUES (?,?,?,?,?,?)", [rol,tipo,comentario,unidad,topico,contenido], function(err, rows) {
+				if (err) {
+					console.log(err);
+					conexion.release();
+					next(false);
+				}
+				else {
+					conexion.release();
+					next(true);
+				}
+			});
+		}
 	});
 };

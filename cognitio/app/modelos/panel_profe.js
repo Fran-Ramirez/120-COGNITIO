@@ -241,6 +241,26 @@ exports.papeleraka = function(pape, next) {
 	});
 };
 
+exports.devolverFeedback = function(next) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+
+        }
+        else {
+			conexion.query("select f.rol as rol,f.comentario as comentario,f.uni_id as uni_id,f.top_id as top_id,f.com_id as com_id,c.titulo as contenido,t.titulo as topico,u.titulo as unidad FROM Feedback as f JOIN Contenido as c ON c.id_uni = f.uni_id AND c.id_top = f.top_id AND c.id = f.com_id JOIN Topico as t ON t.id_uni = f.uni_id AND t.id = f.top_id JOIN Unidad as u ON u.id = f.uni_id WHERE calificacion=0", function(err, rows) {
+				if (err) {
+					conexion.release();
+					next(err,null);
+				}
+				else {
+					conexion.release();
+					next(null,rows);
+				}
+			});
+		}
+	});
+};
+
 exports.papelera_top_ka = function(uni, pape, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
@@ -341,6 +361,7 @@ exports.actualizar_contenido = function(tipo,unidad,topico,titulo,info,etiqueta,
 						callback(false);
 					}
 					else {
+            conexion.query("CALL moverFeedback(?,?,?,?,?,(SELECT MAX(id) FROM Contenido WHERE id_uni = ? AND id_top=?))",[v_unidad,v_topico,v_con,unidad,topico,unidad,topico]);
             conexion.query("DELETE FROM Contenido WHERE (id_uni=? AND id_top=? AND id=?)", [v_unidad,v_topico,v_con], function(err, rows) {
               if(err) {
                 conexion.query("ROLLBACK");
@@ -381,6 +402,7 @@ exports.actualizar_contenido = function(tipo,unidad,topico,titulo,info,etiqueta,
 										callback(false);
 									}
 									else {
+                    conexion.query("CALL moverFeedback(?,?,?,?,?,(SELECT MAX(id) FROM Contenido WHERE id_uni = ? AND id_top=?))",[v_unidad,v_topico,v_con,unidad,top_id,unidad,top_id]);
                     conexion.query("DELETE FROM Contenido WHERE (id_uni=? AND id_top=? AND id=?)", [v_unidad,v_topico,v_con], function(err, rows) {
                       if(err) {
                         conexion.query("ROLLBACK");
@@ -439,6 +461,7 @@ exports.actualizar_contenido = function(tipo,unidad,topico,titulo,info,etiqueta,
 														callback(false);
 													}
 													else {
+                            conexion.query("CALL moverFeedback(?,?,?,?,?,(SELECT MAX(id) FROM Contenido WHERE id_uni = ? AND id_top=?))",[v_unidad,v_topico,v_con,uni_id,top_id,uni_id,top_id]);
                             conexion.query("DELETE FROM Contenido WHERE (id_uni=? AND id_top=? AND id=?)", [v_unidad,v_topico,v_con], function(err, rows) {
                               if(err) {
                                 conexion.query("ROLLBACK");

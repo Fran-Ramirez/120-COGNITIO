@@ -29,7 +29,11 @@ angular.module('mainApp').factory('servicioPrincipal', ['$http','$q', function($
 				d.resolve(data);
 			});
 			return d.promise;
-		}
-    }       
+		},
+    enviarFeedback : function(datos) {
+      return $http.post('/main/enviarFeed',datos);
+    }
+
+    }
 
 }]);

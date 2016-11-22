@@ -1,0 +1,33 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="well">
+        <div class="row" ng-repeat="f in feedbacks">
+          <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-warning">
+              <div class="panel-heading">
+                <div class="col-md-4">
+                  {{f.unidad}}
+                </div>
+                <div class="col-md-4">
+                  {{f.topico}}
+                </div>
+                <div class="col-md-4">
+                  {{f.contenido}}
+                </div>
+              </div>
+              <div class="panel-body">{{f.comentario}}</div>
+            </div>
+          </div>
+        </div>
+			</div>
+		</div>
+	</div>
+</div>

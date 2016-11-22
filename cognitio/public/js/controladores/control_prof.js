@@ -1124,3 +1124,15 @@ angular.module('mainApp').controller('subir__Imagen', ['$scope', 'ngDialog', 'Up
 	};
 
 }]);
+
+angular.module('mainApp').controller('feed_profe', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
+	servicioProf.getFeedback().then(function(res) {
+		if(res.data.exito!=true) {
+			$location.url('/main_prof');
+		}
+		else {
+			$scope.feedbacks = res.data.feed;
+			console.log($scope.feedbacks);
+		}
+	});
+}]);

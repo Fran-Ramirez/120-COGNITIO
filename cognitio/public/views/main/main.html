@@ -52,10 +52,10 @@
 					<h2><small>{{contenidos[llave].titulo}}</small></h2>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="close"><i class="fa fa-plus fa-fw"></i></button>
+					<button type="button" class="close" ng-click="valoracion(true,contenidos[llave].id_uni,contenidos[llave].id_top,contenidos[llave].id)"><i class="fa fa-plus fa-fw"></i></button>
 				</div>
 				<div class="col-md-1">
-					<button type="button" class="close"><i class="fa fa-minus fa-fw"></i></button>
+					<button type="button" class="close" ng-click="valoracion(false,contenidos[llave].id_uni,contenidos[llave].id_top,contenidos[llave].id)"><i class="fa fa-minus fa-fw"></i></button>
 				</div>
 			</div>
 			<div class="row">

@@ -16,7 +16,6 @@ app.get('/tipo_profe', function(req, res) {
 					else if(succ==true) {
 						return res.json({exito:true,tipo:1,extras:[
 								{txt:"Añadir Cuenta",fnc:"/profe_add_cuenta"},
-								{txt:"Eliminar Cuenta",fnc:"/profe_del_cuenta"},
 								{txt:"Perfiles",fnc:"/profe_profiles"},
 								{txt:"Modificar etiquetas",fnc:"/profe_edit_etiquetas"}
 							]});
@@ -46,6 +45,43 @@ app.get('/etiquetas_contenido', function(req, res) {
 			}
 			else {
 				res.json({exito:true,etiquetas:ets});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/getFeedback', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var usuario = require('./modelos/panel_profe');
+		usuario.devolverFeedback(function(err,ets) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,feed:ets});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.get('/dataFeedback/:uni/:top/:con', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var usuario = require('./modelos/panel_profe');
+		usuario.dataFeedback(req.params.uni,req.params.top,req.params.con, function(ets) {
+			if(ets===false) {
+				res.json({exito:false});
+			}
+			else {
+				console.log(ets);
+				res.json({exito:true,con:ets});
 			}
 		});
 	}

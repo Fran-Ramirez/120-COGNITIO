@@ -7,20 +7,18 @@
 			<div class="col-md-4 col-md-offset-4">
 				<ul class="nav nav-pills">
 					<li><a class="btn btn-default" data-toggle="pill" data-target="#nuevo_contenido" href="#">Nuevo contenido</a></li>
-					<li><a class="btn btn-default" data-toggle="pill" data-target="#borradores" href="#">Borradores</a></li>
+					<!-- <li><a class="btn btn-default" data-toggle="pill" data-target="#borradores" href="#">Borradores</a></li> -->
 				</ul>
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="row">
 		<div class="col-md-10 col-md-offset-1">
 			<div class="well">
 				<div class="tab-content">
 					<div id="defect" class="tab-pane fade in active">
-						<h3>Escoger una opción</h3>
-						<p>Puede crear un contenido nuevo desde cero, o seguir trabajando
-						sobre un borrador.</p>
+						<h3>Aregar nuevos contenidos</h3>
 					</div>
 <!--[NUEVO CONTENIDO v]---------------------------------------------------------------------->
 					<div id="nuevo_contenido" class="tab-pane fade">
@@ -97,8 +95,13 @@
 									<div class="col-md-4">
 										<button type="button" class="btn btn-warning btn-block" ng-click="addContenido()">Otro contenido</button>
 									</div>
+									<div class="col-md-4"></div>
+									<div class="col-md-4">
+										<button type="submit" class="btn btn-success btn-block">Publicar</button>
+									</div>
 								</div>
-								<br>
+							</br>
+								<!--
 								<div class = "row">
 									<div class="col-md-4">
 										<button type="button" class="btn btn-primary btn-block">Borrador</button>
@@ -108,10 +111,11 @@
 										<button type="submit" class="btn btn-success btn-block">Publicar</button>
 									</div>
 								</div>
+							-->
 							</fieldset>
 						</form>
 					</div>
-<!--[BORRADORES v]--------------------------------------------------------------------------->					
+<!--[BORRADORES v]--------------------------------------------------------------------------->
 					<div id="borradores" class="tab-pane fade">
 						<h3>Borradores</h3>
 						<p>Some content in menu 1.</p>

@@ -125,7 +125,7 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 
 	.when('/profe_feed', {
 		templateUrl: 'views/prof/profe_feed.html',
-		controller: 'main_prof',
+		controller: 'feed_profe',
 		resolve: {
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});

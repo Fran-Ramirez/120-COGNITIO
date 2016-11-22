@@ -68,6 +68,7 @@ app.post('/autenticacion', function(req,res) {
 			sess.correo = usuario.encriptar(mail);
 			sess.passwd = usuario.encriptar(user.password);
 			sess.extra = usuario.encriptar(req.body.dominio);
+			sess.rol = user.rol;
 			if(user.test == 0) {
 				sess.skip = false;
 			}

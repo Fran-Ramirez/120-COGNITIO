@@ -18,6 +18,29 @@ app.get('/unidades', function(req, res) {
 	}
 });
 
+app.post('/enviarFeed', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var unidades = require('./modelos/contenidos1');
+		/*tipo:false,
+		unidad:id_uni,
+		topico:id_top,
+		contenido:id_con,
+		comentario:data.value.motivo*/
+		unidades.addFeedback(req.body.tipo,req.body.unidad,req.body.topico,req.body.contenido,req.body.comentario,sess.rol,function(ins) {
+			if(ins == false) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
 app.get('/unidad_topicos/:uni',function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
@@ -49,6 +72,7 @@ app.get('/unidad_top_con/:uni/:top',function(req,res) {
 				var back = {};
 				for(var i=0;i<con.length;i++) {
 					back[i] = con[i];
+					back[i]['formulario'] = '<b>asdb</b><i>asd</i>';
 				}
 				res.json({exito:true,contenidos:back});
 			}
@@ -150,6 +174,7 @@ app.post('/respondertest', function(req, res) {
 								res.json({exito:false});
 							}
 							else {
+								sess.skip = true;
 								res.json({exito:true});
 							}
 						}

@@ -1,4 +1,4 @@
-angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$location','servicioPrincipal',function($scope,$rootScope,$location,servicioPrincipal) {
+angular.module('mainApp').controller('controlMain',['$scope','ngDialog','$rootScope','$location','servicioPrincipal',function($scope,ngDialog,$rootScope,$location,servicioPrincipal) {
 	servicioPrincipal.getTest().then(function(res) {
 		if(res.data.exito == -1) {
 			$location.url('/');
@@ -58,9 +58,71 @@ angular.module('mainApp').controller('controlMain',['$scope','$rootScope','$loca
 					}
 				}
 				$scope.contenidos = res.data.contenidos;
-
+				for(var k in Object.keys($scope.contenidos)) {
+					console.log($scope.contenidos[k].formulario);
+				}
 			}
 		});
+	};
+	$scope.valoracion = function(tipo,id_uni,id_top,id) {
+		if(tipo) {
+			var datos = {
+				tipo:true,
+				unidad:id_uni,
+				topico:id_top,
+				contenido:id,
+				comentario:" "
+			};
+			servicioPrincipal.enviarFeedback(datos).then(function(res) {
+				if(res.data.exito == false) {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Hubo un error intenta nuevamente.</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+				}
+			});
+		}
+		else {
+			ngDialog.open({
+				template:'\
+					<p>¿Por qué no te gusta este contenido?</p>\
+					<center><textarea maxlength="140" style="resize:none" ng-model="dialogo.motivo"></textarea></center>\
+					<br>\
+					<div class="ngdialog-buttons">\
+						<button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(\'$escape\')">Cancelar</button>\
+						<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog({motivo:dialogo.motivo})">Enviar</button>\
+					</div>',
+				className: 'ngdialog-theme-default',
+				plain: true
+			}).closePromise.then(function(data) {
+				if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+					console.log(data.value);
+					var datos = {
+						tipo:false,
+						unidad:id_uni,
+						topico:id_top,
+						contenido:id,
+						comentario:data.value.motivo
+					};
+					servicioPrincipal.enviarFeedback(datos).then(function(res) {
+						if(res.data.exito == false) {
+							ngDialog.openConfirm({
+								template:'\
+									<p>Hubo un error intenta nuevamente.</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+						}
+					});
+				}
+			});
+		}
 	};
 }]);
 

@@ -112,6 +112,9 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		reordenarContenidos : function(datos) {
 			return $http.post('/prof_panel/reordenarContenidos', datos);
+		},
+		getFeedback : function() {
+			return $http.get('/prof_panel/getFeedback');
 		}
 	}
 }]);
