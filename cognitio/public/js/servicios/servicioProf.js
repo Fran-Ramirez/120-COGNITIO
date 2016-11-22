@@ -115,6 +115,12 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		getFeedback : function() {
 			return $http.get('/prof_panel/getFeedback');
+		},
+		getUsuarios : function() {
+			return $http.get('/prof_panel/profe_profiles_estudiantes');
+		},
+		getProfesores : function() {
+			return $http.get('/prof_panel/profe_profiles_profesores');
 		}
 	}
 }]);

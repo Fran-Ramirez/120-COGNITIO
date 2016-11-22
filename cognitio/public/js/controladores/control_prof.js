@@ -32,6 +32,43 @@ angular.module('mainApp').controller('log_prof', ['$scope', '$location', 'servic
 	};
 }]);
 
+angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', 'servicioProf', function($scope,$location,servicioProf) {
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
+		}
+		else {
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+			$scope.usuarios  = [];
+			$scope.profesores  = [];
+
+			servicioProf.getUsuarios().then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/');
+				}
+				else {
+					$scope.usuarios = res.data.usuarios;
+				}
+			});
+
+			servicioProf.getProfesores().then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/');
+				}
+				else {
+					$scope.profesores = res.data.profesores;
+				}
+			});
+		}
+	});
+}]);
+
 angular.module('mainApp').controller('main_prof', ['$scope', '$location', 'servicioProf', function($scope,$location,servicioProf) {
 	servicioProf.getTipo().then(function(res) {
 		if(res.data.exito == false) {
@@ -1126,13 +1163,55 @@ angular.module('mainApp').controller('subir__Imagen', ['$scope', 'ngDialog', 'Up
 }]);
 
 angular.module('mainApp').controller('feed_profe', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
-	servicioProf.getFeedback().then(function(res) {
-		if(res.data.exito!=true) {
-			$location.url('/main_prof');
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
 		}
 		else {
-			$scope.feedbacks = res.data.feed;
-			console.log($scope.feedbacks);
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+			servicioProf.getFeedback().then(function(res) {
+				if(res.data.exito!=true) {
+					$location.url('/main_prof');
+				}
+				else {
+					$scope.feedbacks = res.data.feed;
+					console.log($scope.feedbacks);
+				}
+			});
 		}
 	});
+}]);
+
+angular.module('mainApp').controller('add_cuenta', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
+		}
+		else {
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+		}
+	});
+	$scope.submit = function() {
+		ngDialog.openConfirm({
+			template:'\
+				<p>Usuario registrado</p>\
+				<div class="ngdialog-buttons">\
+					<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+				</div>',
+			plain: true
+		});
+		$location.url('/main_prof');
+	};
 }]);

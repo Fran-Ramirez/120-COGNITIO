@@ -1,0 +1,46 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+				<h3>Registre un profesor o coordinador</h3>
+		</div>
+	</div>
+  <div class="row">
+    <form role="form" ng-submit="submit()">
+      <fieldset>
+        <div class="form-group row">
+          <div class="col-md-6">
+            <input class="form-control" placeholder="E-mail" name="email" type="text" ng-model='user.correo' id='c_1' autofocus>
+          </div>
+          <div class="col-md-6">
+            <select class="form-control" ng-model='user.dominio'>
+              <option ng-repeat="x in ['@profesor.usm.cl']" value="{{x}}">
+                {{x}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Nombre" name="nombre" type="text" ng-model='user.nombre' id='n_1'>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Apellido paterno" name="apellido1" type="text" ng-model='user.apellido1' id='a_1'>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Apellido materno" name="apellido2" type="text" ng-model='user.apellido2' id='a_2'>
+        </div>
+        <div class="form-group">
+          <input class="form-control" placeholder="Password" name="password" type="password" ng-model='user.password' id='p_1'>
+        </div>
+        <input class="btn btn-lg btn-success btn-block" type='submit' value='Registrar'>
+      </fieldset>
+    </form>
+  </div>
+</div>

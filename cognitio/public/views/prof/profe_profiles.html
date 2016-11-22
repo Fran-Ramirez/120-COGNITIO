@@ -1,0 +1,85 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+			<div class="col-md-4 col-md-offset-4">
+				<ul class="nav nav-pills">
+					<li><a class="btn btn-default" data-toggle="pill" data-target="#estudiantes" href="#">Estudiantes</a></li>
+					<li><a class="btn btn-default" data-toggle="pill" data-target="#profesores" href="#">Profesores</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-12">
+
+				<div class="tab-content">
+					<div id="defect" class="tab-pane fade in active">
+						<h3>Seleccione tipo de usuario</h3>
+					</div>
+<!--[NUEVO CONTENIDO v]---------------------------------------------------------------------->
+					<div id="estudiantes" class="tab-pane fade">
+            <div class="row">
+							<div class="col-md-12">
+                <h2>Estudiantes Registrados</h2>
+                <p>A continuación se muestran los estudiantes que están registrados en el Sistema.</p>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Rol</th>
+                      <th>DV</th>
+                      <th>e-mail</th>
+                      <th>Tipo Perfil</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="usuario in usuarios" ng-init='indexContenido = $index'>
+                      <td>{{usuario.rol}}</td>
+                      <td>{{usuario.dv}}</td>
+                      <td>{{usuario.correo}}</td>
+                      <td>
+                        <span ng-if="usuario.perfil_id==1">Adaptador</span>
+                        <span ng-if="usuario.perfil_id==2">Asimilador</span>
+                        <span ng-if="usuario.perfil_id==3">Convergente</span>
+                        <span ng-if="usuario.perfil_id==4">Divergente</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+						</div>
+          </div>
+<!--[BORRADORES v]--------------------------------------------------------------------------->
+					<div id="profesores" class="tab-pane fade">
+              <div class="container">
+                <h2>Profesores Registrados</h2>
+                <p>A continuación se muestran los profesores que están registrados en el Sistema.</p>
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Nombre y Apellidos</th>
+                      <th>e-mail</th>
+                      <th>Coordinador</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="profesor in profesores" ng-init='indexContenido = $index'>
+                      <td>{{profesor.nombre}} {{profesor.apellido1}} {{profesor.apellido2}}</td>
+                      <td>{{profesor.correo}}</td>
+                      <td>
+                        <span ng-if="profesor.coordinador==1">Sí</span>
+                        <span ng-if="profesor.coordinador==0">No</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+					</div>
+				</div>
+
+		</div>
+	</div>
+</div>

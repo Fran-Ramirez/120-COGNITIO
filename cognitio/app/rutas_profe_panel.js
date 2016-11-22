@@ -1,5 +1,42 @@
 var app = require('express').Router();
 
+app.get('/profe_profiles_estudiantes', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var usuarios = require('./modelos/usuario');
+		usuarios.obtener_usuarios(function(err, succ) {
+			if(err) {
+				res.json({exito:false});
+			}
+			else if(err==null && succ!=null) {
+				res.json({exito:true,usuarios:succ});
+			}
+		});
+	}
+	else {
+		return res.json({exito:false});
+	}
+});
+
+app.get('/profe_profiles_profesores', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var usuarios = require('./modelos/usuario');
+		usuarios.obtener_profesores(function(err, succ) {
+			console.log(succ);
+			if(err == null && succ == null) {
+				res.json({exito:false});
+			}
+			else if(err==null && succ!=null){
+				res.json({exito:true,profesores:succ});
+			}
+		});
+	}
+	else {
+		return res.json({exito:false});
+	}
+});
+
 app.get('/tipo_profe', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
@@ -16,8 +53,8 @@ app.get('/tipo_profe', function(req, res) {
 					else if(succ==true) {
 						return res.json({exito:true,tipo:1,extras:[
 								{txt:"Añadir Cuenta",fnc:"/profe_add_cuenta"},
-								{txt:"Perfiles",fnc:"/profe_profiles"},
-								{txt:"Modificar etiquetas",fnc:"/profe_edit_etiquetas"}
+								{txt:"Perfiles",fnc:"/profe_prof"}
+								/*{txt:"Modificar etiquetas",fnc:"/profe_edit_etiquetas"}*/
 							]});
 					}
 					else {

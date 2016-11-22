@@ -130,3 +130,53 @@ exports.getTest = function(usuario,pass,callback) {
 		}
 	});
 };
+
+exports.obtener_usuarios = function(callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+          console.log("Error al conectar a la BD en busca de usuarios.");
+        }
+        else {
+			conexion.query("SELECT * FROM Estudiante", function(err, rows){
+				if (err) {
+					conexion.release();
+					callback(err,null);
+				}
+				else {
+          if(rows.length > 0) {
+            callback(null,rows);
+          }
+					else {
+						conexion.release();
+						callback(null,null);
+					}
+				}
+			});
+		}
+	});
+};
+
+exports.obtener_profesores = function(callback) {
+	pool.getConnection(function(err,conexion){
+        if (err) {
+          console.log("Error al conectar a la BD en busca de profesores.");
+        }
+        else {
+			conexion.query("SELECT * FROM Profesor", function(err, rows){
+				if (err) {
+					conexion.release();
+					callback(err,null);
+				}
+				else {
+					if(rows.length > 0) {
+            callback(null,rows);
+          }
+					else {
+						conexion.release();
+						callback(null,null);
+					}
+				}
+			});
+		}
+	});
+};

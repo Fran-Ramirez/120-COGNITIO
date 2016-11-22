@@ -73,6 +73,15 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 					}]
 			}
 	})
+	.when('/profe_add_cuenta', {
+		templateUrl: 'views/prof/add_cuenta.html',
+		controller: 'add_cuenta',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
 	.when('/profe_subir_cont', {
 		templateUrl: 'views/prof/profe_subir_cont.html',
 		controller: 'subir_cont',
@@ -126,6 +135,15 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 	.when('/profe_feed', {
 		templateUrl: 'views/prof/profe_feed.html',
 		controller: 'feed_profe',
+		resolve: {
+				deps: ['$ocLazyLoad',function($ocLazyLoad){
+						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
+					}]
+			}
+	})
+	.when('/profe_prof', {
+		templateUrl: 'views/prof/profe_profiles.html',
+		controller: 'profiles_profe',
 		resolve: {
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});
