@@ -36,9 +36,6 @@ angular.module('mainApp').controller('log', ['$scope','$location','servicioInici
 			}
 		});
 	};
-	$scope.profl = function() {
-		$location.url("/prof_login");
-	};
 }]);
 
 angular.module('mainApp').controller('reg', ['$scope','$location','servicioInicio',function($scope,$location,servicioInicio) {

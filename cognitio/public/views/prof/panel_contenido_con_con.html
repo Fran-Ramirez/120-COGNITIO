@@ -1,0 +1,90 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-10 col-md-offset-1">
+			<div class="row">
+				<div class="col-md-12">
+					<ul class="breadcrumb">
+						<li><a href="/profe_panel">Unidades</a></li>
+            <li><a href="#" ng-click="volverTopico()">{{titulo_unidad}}</a></li>
+						<li><a href="#" ng-click="volverContenido()">{{titulo_topico}}</a></li>
+						<li>{{contenido.titulo}}</li>
+					</ul>
+				</div>
+			</div>
+			<div class="well">
+        <div class="row">
+          <div class="col-md-12">
+            <form role="form" ng-submit="submit()">
+              <fieldset>
+                <h4>Contenido destinado a</h4>
+                <div class="row">
+                  <div class="col-md-5">
+                    Unidad
+                  </div>
+                  <div class="col-md-7">
+                    <select class="form-control" ng-model='nuevo.unidad' ng-options='u.id as u.titulo for u in unidades'  ng-change="actualizarTopicos()"></select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-5">
+                    Tópico
+                  </div>
+                  <div class="col-md-7">
+                    <select class="form-control" ng-model='nuevo.topico' ng-options='t.id as t.titulo for t in topicos'></select>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-md-5">
+                    Título
+                  </div>
+                  <div class="col-md-7">
+                    <input class="form-control" placeholder="Título" name="titulo" type="text" ng-model='nuevo.titulo'>
+                  </div>
+                </div>
+								<div class="row">
+									<div class="col-md-5">
+										Etiqueta
+									</div>
+									<div class="col-md-7">
+										<select class="form-control" ng-model='nuevo.etiqueta' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarEtiqueta()"></select>
+									</div>
+								</div>
+								<br>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="alert alert-info">
+											{{nuevo.desc_eti}}
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-12">
+										<div text-angular ng-model="nuevo.info"></div>
+									</div>
+								</div>
+								<br>
+								<div class = "row">
+									<div class="col-md-4">
+										<button type="button" class="btn btn-warning btn-block" ng-click="volverContenido()">Cancelar</button>
+									</div>
+									<div class="col-md-4"></div>
+									<div class="col-md-4">
+										<button type="submit" class="btn btn-success btn-block">Guardar</button>
+									</div>
+								</div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -22,7 +22,7 @@ app.get('/unidad_topicos/:uni',function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
 		var unidades = require('./modelos/contenidos1');
-		unidades.lista_unidad_topico(true,req.params.uni, function(err,tops) {
+		unidades.lista_unidad_topico(false,req.params.uni, function(err,tops) {
 			if(err) {
 				res.json({exito:false});
 			}
@@ -65,20 +65,8 @@ app.get('/checktest', function(req, res) {
 		var usuario = require('./modelos/usuario');
 		var pass = usuario.desencriptar(sess.passwd);
 		var correo = usuario.desencriptar(sess.correo);
-		var perfil = sess.skip;
-		usuario.getTest(correo,pass,function(err, b_test) {
-			if(err || b_test == null) {
-				res.json({exito:-1});
-			}
-			else {
-				if(b_test == false && perfil != true) {
-					res.json({test:false});
-				}
-				else {
-					res.json({test:true});
-				}
-			}
-		});
+		var testto = sess.skip;
+		res.json({test:testto});
 	}
 	else {
 		res.json({exito:-1});

@@ -28,7 +28,7 @@ app.get('/logout', function(req,res) {
 app.post('/signup', function(req,res) {
 	if(!req.body.correo || !req.body.dominio || !req.body.rol || !req.body.password) {
 		res.json({exito:false,mensaje:'Introducir correo, rol y contrasena'});
-	} 
+	}
 	else {
 		var mail = req.body.correo+req.body.dominio;
 		var test_rol = /^\d+\-[k|K|\d]$/g;
@@ -59,7 +59,7 @@ app.post('/autenticacion', function(req,res) {
 		if(error) {
 			return res.json({exito:false,mensaje:'Algo salio mal'});
 		}
-		
+
 		if(user===false) {
 			return res.json({exito:false,mensaje:'Usuario o contraseña incorrecto'});
 		}
@@ -68,7 +68,7 @@ app.post('/autenticacion', function(req,res) {
 			sess.correo = usuario.encriptar(mail);
 			sess.passwd = usuario.encriptar(user.password);
 			sess.extra = usuario.encriptar(req.body.dominio);
-			if(user.perfil_id == null) {
+			if(user.test == 0) {
 				sess.skip = false;
 			}
 			sess.cookie.expires = new Date(Date.now()+86400000);
