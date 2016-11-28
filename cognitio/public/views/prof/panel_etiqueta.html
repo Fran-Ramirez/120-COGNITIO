@@ -1,0 +1,88 @@
+<div class="container">
+	<div class="page-header">
+		<div class="row">
+			<div class="col-md-4">
+				<h4><a href="/main_prof">120 COGNITIO - {{titulo}}</a></h4>
+			</div>
+			<div class="col-md-4 col-md-offset-4">
+				<ul class="nav nav-pills">
+					<li><a class="btn btn-default" href="#" ng-click="nuevoTag()">Nueva etiqueta</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<h3>Editar etiquetas</h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<select class="form-control" ng-model='ets_actual' ng-options='e.id as e.nombre_etiqueta for e in etiquetas' ng-change="actualizarGrafo()"></select>
+		</div>
+	</div>
+	<br>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<div class="alert alert-info">
+				{{editor.descripcion}}
+			</div>
+		</div>
+	</div>
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+		  <vis-network data="data" options="options" height="100%"></vis-network>
+    </div>
+  </div>
+	<div class="row" ng-show="editar">
+    <div class="col-md-8 col-md-offset-2">
+			<div class="form-group row">
+				<div class="col-md-4">
+					Título
+				</div>
+				<div class="col-md-8">
+					<input class="form-control" placeholder="{{editor.titulo}}" name="titulo" type="text" ng-model='editor.titulo' id='t_1'>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-md-4">
+					Descripción
+				</div>
+				<div class="col-md-8">
+					<textarea style="resize:none" class="form-control" placeholder="{{editor.descripcion}}" name="descripcion" ng-model="editor.descripcion" id="e_1" maxlength="255"></textarea
+				</div>
+			</div>
+			<br>
+			<br>
+			<br>
+			<br>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-2">
+          <input name="adaptador" type="checkbox" value="Adaptador" ng-model="editor.Adaptador" ng-change="editarGrafo('Adaptador')">
+					<label>Adaptador</label>
+				</div>
+				<div class="col-md-4">
+					<input name="asimilador" type="checkbox" value="Asimilador" ng-model="editor.Asimilador" ng-change="editarGrafo('Asimilador')">
+					<label>Asimilador</label>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-2">
+					<input name="convergente" type="checkbox" value="Convergente" ng-model="editor.Convergente" ng-change="editarGrafo('Convergente')">
+					<label>Convergente</label>
+				</div>
+				<div class="col-md-4">
+					<input name="divergente" type="checkbox" value="Divergente" ng-model="editor.Divergente" ng-change="editarGrafo('Divergente')">
+					<label>Divergente</label>
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-1">
+					<button type="button" class="btn btn-primary" ng-click="submit()">Guardar</button>
+				</div>
+			</div>
+    </div>
+  </div>
+</div>

@@ -91,6 +91,7 @@ exports.etiquetas = function(next) {
 		}
 	});
 };
+
 exports.addFeedback= function(tipo,unidad,topico,contenido,comentario,rol,next) {
 	pool.getConnection(function(err,conexion){
     if (err) {

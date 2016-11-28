@@ -26,6 +26,8 @@ app.use('/angular-ui-sortable', express.static(__dirname + '/node_modules/angula
 app.use('/angular-ui-bootstrap', express.static(__dirname + '/node_modules/angular-ui-bootstrap/dist/'));
 app.use('/angular', express.static(__dirname + '/node_modules/angular/'));
 app.use('/angular-route', express.static(__dirname + '/node_modules/angular-route/'));
+app.use('/vis', express.static(__dirname + '/node_modules/vis/dist'));
+app.use('/angular-visjs', express.static(__dirname + '/node_modules/angular-visjs/'));
 
 app.use(helmet());
 

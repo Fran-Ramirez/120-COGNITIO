@@ -1,4 +1,4 @@
-var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad','textAngular','ngDialog','ngFileUpload','ui.sortable']);
+var app = angular.module('mainApp', ['ngRoute','oc.lazyLoad','textAngular','ngDialog','ngFileUpload','ui.sortable','ngVis']);
 app.config(['$routeProvider', '$locationProvider', '$provide', function($routeProvider, $locationProvider, $provide) {
 
 	$provide.decorator('taOptions',['taRegisterTool','$delegate','ngDialog', function(taRegisterTool,taOptions,ngDialog){
@@ -150,9 +150,9 @@ app.config(['$routeProvider', '$locationProvider', '$provide', function($routePr
 					}]
 			}
 	})
-	.when('/prof_alertas', {
-		templateUrl: 'views/prof/prof_alertas.html',
-		controller: 'main_prof',
+	.when('/prof_etiqueta', {
+		templateUrl: 'views/prof/panel_etiqueta.html',
+		controller: 'etiqueta_ctrl',
 		resolve: {
 				deps: ['$ocLazyLoad',function($ocLazyLoad){
 						return $ocLazyLoad.load({files:['js/servicios/servicioProf.js','js/controladores/control_prof.js']});

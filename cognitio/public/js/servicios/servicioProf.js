@@ -121,6 +121,18 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		getProfesores : function() {
 			return $http.get('/prof_panel/profe_profiles_profesores');
+		},
+		addCuenta : function(datos) {
+			return $http.post('/prof_panel/aniadirCta', datos);
+		},
+		perfilesDeEti : function(id_sel) {
+			return $http.get('/prof_panel/relacionesEtiqueta/'+id_sel);
+		},
+		updateEtiqueta : function(datos) {
+			return $http.post('/prof_panel/updateEtiqueta', datos);
+		},
+		addEtiqueta : function(datos) {
+			return $http.post('/prof_panel/addEtiqueta', datos);
 		}
 	}
 }]);

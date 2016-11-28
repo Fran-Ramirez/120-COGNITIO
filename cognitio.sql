@@ -158,6 +158,23 @@ SET NEW.id = (aux_id2+1);
 END //
 DELIMITER ;
 
+DROP PROCEDURE IF EXISTS moverFeedback;
+DELIMITER //
+CREATE PROCEDURE moverFeedback(
+IN _v_unidad INT(10) UNSIGNED,
+IN _v_topico INT(10) UNSIGNED, 
+IN _v_contenido INT(10) UNSIGNED,
+IN _n_unidad INT(10) UNSIGNED,
+IN _n_topico INT(10) UNSIGNED, 
+IN _n_contenido INT(10) UNSIGNED)
+BEGIN
+INSERT INTO Feedback (rol,calificacion,soporte,comentario,uni_id,top_id,com_id) 
+SELECT rol,calificacion,soporte,comentario,_n_unidad,_n_topico,_n_contenido FROM Feedback
+WHERE (uni_id=_v_unidad AND top_id=_v_topico AND com_id=_v_contenido);
+DELETE FROM Feedback WHERE (uni_id=_v_unidad AND top_id=_v_topico AND com_id=_v_contenido);
+END //
+DELIMITER ;
+
 CREATE VIEW view_unidades_borradas AS
 SELECT * FROM Unidad WHERE visible = 0;
 

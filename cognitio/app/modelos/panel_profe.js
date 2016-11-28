@@ -44,6 +44,135 @@ exports.updateUnidades = function(unidades,callback) {
 	});
 };
 
+exports.aniadirEtiqueta = function(titulo, descripcion, callback) {
+  pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+      conexion.query("INSERT INTO Etiqueta (nombre_etiqueta,descripcion) VALUES (?,?)",[titulo,descripcion], function(err, rows) {
+        if(err) {
+          conexion.query("ROLLBACK");
+          conexion.release();
+          callback(false);
+        }
+        else {
+          conexion.query("COMMIT");
+          conexion.release();
+          callback(true);
+        }
+      });
+    }
+  });
+};
+
+exports.actualizarEtiqueta = function(eti_id,tit,desc,adaptador,asimilador,convergente,divergente,callback) {
+	pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+			conexion.query("START TRANSACTION");
+      conexion.query("UPDATE Etiqueta SET nombre_etiqueta=?,descripcion=? WHERE id=?",[tit,desc,eti_id], function(err, rows) {
+        if(err) {
+          conexion.query("ROLLBACK");
+          conexion.release();
+          callback(false);
+        }
+        else {
+    			conexion.query("SELECT perfil_id FROM Perfil_Etiqueta WHERE etiqueta_id=?",[eti_id], function(err, rows) {
+    				if(err) {
+    					conexion.query("ROLLBACK");
+    					conexion.release();
+    					callback(false);
+    				}
+    				else {
+              var perfiles_new = {
+                1:adaptador,
+                2:asimilador,
+                3:convergente,
+                4:divergente
+              };
+              var perfiles_old = {
+                1:false,
+                2:false,
+                3:false,
+                4:false
+              };
+              for(var i=0;i<rows.length;i++) {
+                perfiles_old[rows[i].perfil_id] = true;
+              }
+              var contador = 4;
+              for(var i=1;i<5;i++) {
+                if(perfiles_old[i] == true && perfiles_new[i] == false) {
+                  conexion.query("DELETE FROM Perfil_Etiqueta WHERE (etiqueta_id=? AND perfil_id=?)",[eti_id,i], function(err, rows) {
+            				if(err) {
+            					conexion.query("ROLLBACK");
+            					conexion.release();
+            					callback(false);
+            				}
+            				else if (0 == --contador) {
+                      conexion.query("COMMIT");
+            					conexion.release();
+            					callback(true);
+                    }
+                  });
+                }
+                else if(perfiles_old[i] == false && perfiles_new[i] == true) {
+                  console.log(i);
+                  conexion.query("INSERT INTO Perfil_Etiqueta (etiqueta_id,perfil_id) VALUES (?,?)",[eti_id,i], function(err, rows) {
+            				if(err) {
+            					conexion.query("ROLLBACK");
+            					conexion.release();
+            					callback(false);
+            				}
+            				else if (0 == --contador) {
+                      conexion.query("COMMIT");
+            					conexion.release();
+            					callback(true);
+                    }
+                  });
+                }
+                else {
+                  if(0 == --contador) {
+                    conexion.query("COMMIT");
+                    conexion.release();
+                    callback(true);
+                  }
+                }
+              }
+    				}
+    			});
+        }
+      });
+		}
+	});
+};
+
+exports.perfilEtiqueta = function(et,callback) {
+  pool.getConnection(function(err,conexion){
+    if(err) {
+
+    }
+    else {
+      var consulta = "SELECT p.nombre as conexion "+
+      "from Etiqueta as e "+
+      "INNER JOIN Perfil_Etiqueta as p_e ON e.id=p_e.etiqueta_id "+
+      "INNER JOIN Perfil as p ON p.id=p_e.perfil_id WHERE e.id=?";
+      conexion.query(consulta, [et], function(err, rows) {
+        if(err) {
+          conexion.release();
+          callback(null);
+        }
+        else {
+          conexion.release();
+          callback(rows);
+        }
+      });
+    }
+  });
+};
+
 exports.updateTopicos = function(unidad, topicos,callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {
@@ -135,6 +264,32 @@ exports.actualizarTopico = function(id, id_uni, titulo, descripcion, callback) {
 	});
 };
 
+exports.registrarUsuario = function(email, nombre, apellido1, apellido2, pass, tipo, callback) {
+	pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+			var rango;
+			if(tipo == "Profesor") {
+				rango = 0;
+			}
+			else {
+				rango = 1;
+			}
+			conexion.query("INSERT INTO Profesor (correo,nombre,apellido1,apellido2,password,coordinador) VALUES (?,?,?,?,?,?)" ,[email,nombre,apellido1,apellido2,encrypt(pass),rango], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
 exports.tirarPapelera = function(hacia, id, callback) {
 	pool.getConnection(function(err,conexion){
         if (err) {

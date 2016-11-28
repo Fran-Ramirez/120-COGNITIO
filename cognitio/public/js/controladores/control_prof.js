@@ -1188,6 +1188,185 @@ angular.module('mainApp').controller('feed_profe', ['$scope', 'ngDialog', '$loca
 	});
 }]);
 
+angular.module('mainApp').controller('etiqueta_ctrl', ['$scope', 'VisDataSet', 'ngDialog', '$location', 'servicioProf','$route', function($scope,VisDataSet,ngDialog,$location,servicioProf,$route) {
+	servicioProf.getTipo().then(function(res) {
+		if(res.data.exito == false) {
+			servicioProf.logout();
+			$location.url('/');
+		}
+		else {
+			if(res.data.tipo == 1) {
+				$scope.titulo = 'Coordinador';
+			}
+			else {
+				$scope.titulo = 'Profesor';
+			}
+			servicioProf.getEtiquetas().then(function(res) {
+				if(res.data.exito == false) {
+					$location.url('/main_prof');
+				}
+				else {
+					$scope.etiquetas = res.data.etiquetas;
+					$scope.etiquetas.push({id:-1,nombre_etiqueta:"Escoja una etiqueta",descripcion:"Ninguna etiqueta seleccionada"});
+					$scope.ets_actual = -1;
+					$scope.editor = {};
+					$scope.editor.Adaptador = false;
+					$scope.editor.Asimilador = false;
+					$scope.editor.Convergente = false;
+					$scope.editor.Divergente = false;
+					$scope.editor.descripcion = "Ninguna etiqueta seleccionada";
+					$scope.options = {
+						autoResize: true,
+						height: '300',
+						width: '100%',
+						physics:{enabled: false},
+						interaction:{
+							zoomView:false,
+							dragNodes:false,
+		    			dragView:false
+						}
+					};
+					$scope.data = {
+						"nodes":new vis.DataSet([
+							{"id":"Adaptador","label":"Adaptador","size":10,"x":-200,"y":100,"color":"#BEDEFF","shape":"box","shadow":true},
+							{"id":"Asimilador","label":"Asimilador","size":10,"x":-200,"y":-100,"color":"#BEDEFF","shape":"box","shadow":true},
+							{"id":"Convergente","label":"Convergente","size":10,"x":200,"y":100,"color":"#BEDEFF","shape":"box","shadow":true},
+							{"id":"Divergente","label":"Divergente","size":10,"x":200,"y":-100,"color":"#BEDEFF","shape":"box","shadow":true}
+						]),
+						"edges":new vis.DataSet([])
+					};
+
+				}
+			});
+		}
+	});
+
+	$scope.nuevoTag = function() {
+		ngDialog.open({
+			template:'views/prof/dialog_nueva_etiqueta.html',
+			className: 'ngdialog-theme-default'
+		}).closePromise.then(function(data) {
+			if(data.value != '$escape' && data.value != '$closeButton' && data.value != '$document') {
+				if(data.value.etiqueta.titulo.length >= 1 && data.value.etiqueta.descripcion.length >= 1) {
+					var datos_enviar = {
+						titulo:data.value.etiqueta.titulo,
+						descripcion:data.value.etiqueta.descripcion
+					};
+					servicioProf.addEtiqueta(datos_enviar).then(function(res) {
+						if(res.data.exito == true) {
+							ngDialog.openConfirm({
+								template:'\
+									<p>La etiqueta fue creada con éxito</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+							$route.reload();
+						}
+						else {
+							ngDialog.openConfirm({
+								template:'\
+									<p>Algo salió mal</p>\
+									<div class="ngdialog-buttons">\
+										<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+									</div>',
+								plain: true
+							});
+						}
+					});
+				}
+			}
+		});
+	};
+
+	$scope.submit = function() {
+		if($scope.editor.titulo.length > 0 && $scope.editor.descripcion.length > 0) {
+			var datos = {
+				etiqueta:$scope.ets_actual,
+				titulo:$scope.editor.titulo,
+				descripcion:$scope.editor.descripcion,
+				adaptador:$scope.editor.Adaptador,
+				asimilador:$scope.editor.Asimilador,
+				convergente:$scope.editor.Convergente,
+				divergente:$scope.editor.Divergente
+			};
+			servicioProf.updateEtiqueta(datos).then(function(res) {
+				console.log(res.data);
+				if(res.data.exito == true) {
+					$route.reload();
+				}
+				else {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Algo salió mal.</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+				}
+			});
+		}
+		else {
+			ngDialog.openConfirm({
+				template:'\
+					<p>El título o descripción están en blanco.</p>\
+					<div class="ngdialog-buttons">\
+						<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+					</div>',
+				plain: true
+			});
+		}
+	};
+
+	$scope.editarGrafo = function(linea) {
+		if(!$scope.editor[linea]) {
+			$scope.data.edges.remove(linea);
+		}
+		else {
+			$scope.data.edges.add({"id":linea,"from":$scope.ets_actual,"to":linea});
+		}
+	};
+
+	$scope.actualizarGrafo = function() {
+		$scope.data.nodes.clear();
+		$scope.data.edges.clear();
+		$scope.data.nodes.add([
+			{"id":"Adaptador","label":"Adaptador","size":10,"x":-200,"y":100,"color":"#BEDEFF","shape":"box","shadow":true},
+			{"id":"Asimilador","label":"Asimilador","size":10,"x":-200,"y":-100,"color":"#BEDEFF","shape":"box","shadow":true},
+			{"id":"Convergente","label":"Convergente","size":10,"x":200,"y":100,"color":"#BEDEFF","shape":"box","shadow":true},
+			{"id":"Divergente","label":"Divergente","size":10,"x":200,"y":-100,"color":"#BEDEFF","shape":"box","shadow":true}
+		]);
+		$scope.editar = false;
+		$scope.editor.Adaptador = false;
+		$scope.editor.Asimilador = false;
+		$scope.editor.Convergente = false;
+		$scope.editor.Divergente = false;
+		$scope.editor.descripcion = "Ninguna etiqueta seleccionada";
+
+		if($scope.ets_actual != -1) {
+			servicioProf.perfilesDeEti($scope.ets_actual).then(function(res){
+				if(res.data.exito) {
+					for(var i=0;i<$scope.etiquetas.length;i++) {
+						if($scope.etiquetas[i].id == $scope.ets_actual) {
+							$scope.editor.titulo = $scope.etiquetas[i].nombre_etiqueta;
+							$scope.editor.descripcion = $scope.etiquetas[i].descripcion;
+							$scope.data.nodes.add({"id":$scope.etiquetas[i].id,"label":$scope.etiquetas[i].nombre_etiqueta,"size":10,"x":0,"y":0,"color":"#93D276","shape":"box","shadow":true});
+							for(var j=0;j<res.data.conexiones.length;j++) {
+								$scope.data.edges.add({"id":res.data.conexiones[j].conexion,"from":$scope.etiquetas[i].id,"to":res.data.conexiones[j].conexion});
+								$scope.editor[res.data.conexiones[j].conexion] = true;
+							}
+							break;
+						}
+					}
+					$scope.editar = true;
+				}
+			});
+		}
+	};
+}]);
+
 angular.module('mainApp').controller('add_cuenta', ['$scope', 'ngDialog', '$location', 'servicioProf', function($scope,ngDialog,$location,servicioProf) {
 	servicioProf.getTipo().then(function(res) {
 		if(res.data.exito == false) {
@@ -1201,17 +1380,44 @@ angular.module('mainApp').controller('add_cuenta', ['$scope', 'ngDialog', '$loca
 			else {
 				$scope.titulo = 'Profesor';
 			}
+			$scope.correos = ['@profesor.usm.cl'];
+			$scope.tiposUsuario = ['Profesor','Coordinador'];
+			$scope.user = {};
+			$scope.user.dominio = $scope.correos[0];
+			$scope.user.tipousuario = $scope.tiposUsuario[0];
 		}
 	});
 	$scope.submit = function() {
-		ngDialog.openConfirm({
-			template:'\
-				<p>Usuario registrado</p>\
-				<div class="ngdialog-buttons">\
-					<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
-				</div>',
-			plain: true
+		var datos={
+			email:$scope.user.correo+$scope.user.dominio,
+			nombre:$scope.user.nombre,
+			apellido1:$scope.user.apellido1,
+			apellido2:$scope.user.apellido2,
+			pass:$scope.user.password,
+			tipo:$scope.user.tipousuario
+		};
+		servicioProf.addCuenta(datos).then(function(res) {
+			if(res.data.exito) {
+				ngDialog.openConfirm({
+					template:'\
+						<p>Usuario registrado</p>\
+						<div class="ngdialog-buttons">\
+							<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+						</div>',
+					plain: true
+				});
+				$location.url('/main_prof');
+			}
+			else {
+				ngDialog.openConfirm({
+					template:'\
+						<p>Algo salió mal</p>\
+						<div class="ngdialog-buttons">\
+							<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+						</div>',
+					plain: true
+				});
+			}
 		});
-		$location.url('/main_prof');
 	};
 }]);

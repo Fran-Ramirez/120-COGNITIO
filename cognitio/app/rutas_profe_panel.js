@@ -23,7 +23,6 @@ app.get('/profe_profiles_profesores', function(req, res) {
 	if(sess.correo && sess.passwd) {
 		var usuarios = require('./modelos/usuario');
 		usuarios.obtener_profesores(function(err, succ) {
-			console.log(succ);
 			if(err == null && succ == null) {
 				res.json({exito:false});
 			}
@@ -53,8 +52,8 @@ app.get('/tipo_profe', function(req, res) {
 					else if(succ==true) {
 						return res.json({exito:true,tipo:1,extras:[
 								{txt:"Añadir Cuenta",fnc:"/profe_add_cuenta"},
-								{txt:"Perfiles",fnc:"/profe_prof"}
-								/*{txt:"Modificar etiquetas",fnc:"/profe_edit_etiquetas"}*/
+								{txt:"Perfiles",fnc:"/profe_prof"},
+								{txt:"Modificar etiquetas",fnc:"/prof_etiqueta"}
 							]});
 					}
 					else {
@@ -108,6 +107,24 @@ app.get('/getFeedback', function(req, res) {
 	}
 });
 
+app.get('/relacionesEtiqueta/:et', function(req, res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		var usuario = require('./modelos/panel_profe');
+		usuario.perfilEtiqueta(req.params.et,function(resultado) {
+			if(resultado === null) {
+				res.json({exito:false});
+			}
+			else {
+				res.json({exito:true,conexiones:resultado});
+			}
+		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
 app.get('/dataFeedback/:uni/:top/:con', function(req, res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {
@@ -138,6 +155,69 @@ app.post('/subir_foto_contenido',function(req,res) {
 				res.json({exito:true,img:'imagenes/subidas/'+req.file.filename});
 			}
 		});
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.post('/updateEtiqueta',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(!(req.body.etiqueta==null || req.body.titulo == null || req.body.descripcion == null ||
+		   req.body.adaptador == null  || req.body.asimilador == null  || req.body.convergente == null ||
+		 	 req.body.divergente == null)) {
+			var usuario = require('./modelos/panel_profe');
+			usuario.actualizarEtiqueta(req.body.etiqueta,req.body.titulo,req.body.descripcion,req.body.adaptador,req.body.asimilador,req.body.convergente,req.body.divergente,function(err){
+				if(!err) {
+					res.json({exito:false});
+				}
+				else {
+					res.json({exito:true});
+				}
+			});
+		}
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.post('/addEtiqueta',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(!(req.body.titulo==null || req.body.descripcion==null)) {
+			var usuario = require('./modelos/panel_profe');
+			usuario.aniadirEtiqueta(req.body.titulo, req.body.descripcion, function(err){
+				if(!err) {
+					res.json({exito:false});
+				}
+				else {
+					res.json({exito:true});
+				}
+			});
+		}
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.post('/aniadirCta',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(!(req.body.email==null || req.body.nombre == null || req.body.apellido1 == null ||
+		   req.body.apellido2 == null  || req.body.pass == null  || req.body.tipo == null)) {
+			var usuario = require('./modelos/panel_profe');
+			usuario.registrarUsuario(req.body.email,req.body.nombre,req.body.apellido1,req.body.apellido2,req.body.pass,req.body.tipo,function(err){
+				if(!err) {
+					res.json({exito:false});
+				}
+				else {
+					res.json({exito:true});
+				}
+			});
+		}
 	}
 	else {
 		res.json({exito:false});
