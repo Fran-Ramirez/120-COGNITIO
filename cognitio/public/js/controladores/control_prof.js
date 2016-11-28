@@ -77,7 +77,7 @@ angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', '
 				if(res.data.exito==true) {
 					ngDialog.openConfirm({
 						template:'\
-							<p>Usuario suspendido</p>\
+							<p>Acción completada</p>\
 							<div class="ngdialog-buttons">\
 								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
 							</div>',
@@ -106,7 +106,7 @@ angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', '
 				if(res.data.exito==true) {
 					ngDialog.openConfirm({
 						template:'\
-							<p>Usuario suspendido</p>\
+							<p>Acción completada</p>\
 							<div class="ngdialog-buttons">\
 								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
 							</div>',
