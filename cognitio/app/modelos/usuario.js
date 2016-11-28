@@ -46,7 +46,7 @@ exports.ver = function(usuario, pass, next) {
 
         }
         else {
-			conexion.query("SELECT rol,correo,password,test FROM Estudiante WHERE correo=?", [usuario], function(err, rows) {
+			conexion.query("SELECT rol,correo,password,test FROM Estudiante WHERE (correo=? AND suspendido=0)", [usuario], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,false);

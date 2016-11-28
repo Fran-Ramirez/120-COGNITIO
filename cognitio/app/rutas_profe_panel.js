@@ -203,6 +203,46 @@ app.post('/addEtiqueta',function(req,res) {
 	}
 });
 
+app.post('/suspenderProfe',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(!(req.body.id==null || req.body.funcion==null)) {
+			var usuario = require('./modelos/panel_profe');
+			usuario.banProfe(req.body.id, req.body.funcion, function(err){
+				if(!err) {
+					res.json({exito:false});
+				}
+				else {
+					res.json({exito:true});
+				}
+			});
+		}
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
+app.post('/suspenderEstudiante',function(req,res) {
+	var sess = req.session;
+	if(sess.correo && sess.passwd) {
+		if(!(req.body.rol==null || req.body.funcion==null)) {
+			var usuario = require('./modelos/panel_profe');
+			usuario.banEstudiante(req.body.rol, req.body.funcion, function(err){
+				if(!err) {
+					res.json({exito:false});
+				}
+				else {
+					res.json({exito:true});
+				}
+			});
+		}
+	}
+	else {
+		res.json({exito:false});
+	}
+});
+
 app.post('/aniadirCta',function(req,res) {
 	var sess = req.session;
 	if(sess.correo && sess.passwd) {

@@ -44,6 +44,46 @@ exports.updateUnidades = function(unidades,callback) {
 	});
 };
 
+exports.banProfe = function(id,accion,callback) {
+	pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+			conexion.query("UPDATE Profesor SET suspendido=? WHERE (id=?)",[accion,id], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+
+exports.banEstudiante = function(rol,accion,callback) {
+	pool.getConnection(function(err,conexion){
+    if (err) {
+
+    }
+    else {
+			conexion.query("UPDATE Estudiante SET suspendido=? WHERE (rol=?)",[accion,rol], function(err, rows) {
+				if(err) {
+					conexion.release();
+					callback(false);
+				}
+				else {
+					conexion.release();
+					callback(true);
+				}
+			});
+		}
+	});
+};
+
 exports.aniadirEtiqueta = function(titulo, descripcion, callback) {
   pool.getConnection(function(err,conexion){
     if (err) {

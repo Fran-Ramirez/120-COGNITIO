@@ -6,7 +6,7 @@ INSERT INTO Perfil (nombre,cantidad) VALUES ('Divergente', 0);
 INSERT INTO Unidad (titulo,descripcion) VALUES ('Unidad 1: Carga Electrica', 'Electricidad');
 INSERT INTO Unidad (titulo,descripcion) VALUES ('Unidad 2: Ley Coulomb', 'Todo sobre ley de coulomb');
 INSERT INTO Unidad (titulo,descripcion) VALUES ('Unidad 3: Campo Electrico', 'Campos electricos y mucho mas');
-INSERT INTO Unidad (titulo,descripcion) VALUES ('Unidad 4: Imanes', 'Aplicaciones sobre imanes yteoria');
+INSERT INTO Unidad (titulo,descripcion) VALUES ('Unidad 4: Imanes', 'Aplicaciones sobre imanes y teoria');
 
 INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (1,'Topico 1:Carga Electrica','Primer topico');
 INSERT INTO Topico (id_uni,titulo,descripcion) VALUES (1,'Topico 2:Carga Electrica','Segundo topico');
@@ -39,5 +39,10 @@ INSERT INTO Contenido (id_uni,id_top,titulo,info,etiqueta_id,borrador) VALUES (1
 INSERT INTO Contenido (id_uni,id_top,titulo,info,etiqueta_id,borrador) VALUES (1,1,'Contenido topico 1', 'para convergente',3,0);
 INSERT INTO Contenido (id_uni,id_top,titulo,info,etiqueta_id,borrador) VALUES (1,1,'Contenido topico 1', 'para divergente',4,0);
 
-INSERT INTO Profesor (nombre,apellido1,apellido2,correo,password,coordinador,suspendido) VALUES ('luis','Suarez','diaz','mordelon@profesor.usm.cl','e2236ddc5a2c764f4a3ab5c877bd5a58',1,0);
+INSERT INTO Estudiante (rol,dv,perfil_id,nombre,apellido1,apellido2,correo,foto,password,paralelo) VALUES (201373508,8,1,'Dominguez','Paredes','Camilo','camilo.d.13@sansano.usm.cl', NULL,'e2236ddc5a2c764f4a3ab5c877bd5a58',1);
+INSERT INTO Estudiante (rol,dv,perfil_id,nombre,apellido1,apellido2,correo,foto,password,paralelo) VALUES (201104560,2,2,'Brito','Ruiz','Alan','alan.r.11@sansano.usm.cl', NULL,'e2236ddc5a2c764f4a3ab5c877bd5a58',2);
+INSERT INTO Estudiante (rol,dv,perfil_id,nombre,apellido1,apellido2,correo,foto,password,paralelo) VALUES (201092008,9,3,'Salas','Benavides','Luisa','luisa.b.14@sansano.usm.cl', NULL,'e2236ddc5a2c764f4a3ab5c877bd5a58',3);
 
+INSERT INTO Profesor (nombre,apellido1,apellido2,correo,password,coordinador,suspendido) VALUES ('Luis','Suarez','Diaz','coordinador1@profesor.usm.cl','e2236ddc5a2c764f4a3ab5c877bd5a58',1,0);
+INSERT INTO Profesor (nombre,apellido1,apellido2,correo,password,coordinador,suspendido) VALUES ('Juan','Perez','Perez','profesor1@profesor.usm.cl','e2236ddc5a2c764f4a3ab5c877bd5a58',0,0);
+INSERT INTO Profesor (nombre,apellido1,apellido2,correo,password,coordinador,suspendido) VALUES ('Hernan','Morales','Riquelme','profesor2@profesor.usm.cl','e2236ddc5a2c764f4a3ab5c877bd5a58',0,0);

@@ -33,6 +33,7 @@
                       <th>DV</th>
                       <th>e-mail</th>
                       <th>Tipo Perfil</th>
+											<th>Suspender?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -46,6 +47,10 @@
                         <span ng-if="usuario.perfil_id==3">Convergente</span>
                         <span ng-if="usuario.perfil_id==4">Divergente</span>
                       </td>
+											<td>
+												<span ng-if="!usuario.suspendido"><button type="button" class="btn btn-danger btn-block" ng-click="suspenderCta(0,1,usuario.rol)">Suspender</button></span>
+												<span ng-if="usuario.suspendido"><button type="button" class="btn btn-success btn-block" ng-click="suspenderCta(0,0,usuario.rol)">Activar</button></span>
+											</td>
                     </tr>
                   </tbody>
                 </table>
@@ -63,6 +68,7 @@
                       <th>Nombre y Apellidos</th>
                       <th>e-mail</th>
                       <th>Coordinador</th>
+											<th>Suspender?</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -73,6 +79,10 @@
                         <span ng-if="profesor.coordinador==1">Sí</span>
                         <span ng-if="profesor.coordinador==0">No</span>
                       </td>
+											<td>
+												<span ng-if="!profesor.suspendido"><button type="button" class="btn btn-danger btn-block" ng-click="suspenderCta(1,1,profesor.id)">Suspender</button></span>
+												<span ng-if="profesor.suspendido"><button type="button" class="btn btn-success btn-block" ng-click="suspenderCta(1,0,profesor.id)">Activar</button></span>
+											</td>
                     </tr>
                   </tbody>
                 </table>

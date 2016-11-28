@@ -9,7 +9,7 @@ var encrypt = function(text){
   return crypted;
 };
 exports.encriptar = encrypt;
- 
+
 var decrypt = function(text){
   var decipher = crypto.createDecipher(algorithm,password)
   var dec = decipher.update(text,'hex','utf8')
@@ -21,10 +21,10 @@ exports.desencriptar = decrypt;
 exports.ver = function(usuario, pass, next) {
 	pool.getConnection(function(err,conexion){
         if (err) {
-			
+
         }
         else {
-			conexion.query("SELECT correo,password FROM Profesor WHERE correo=?", [usuario], function(err, rows) {
+			conexion.query("SELECT correo,password FROM Profesor WHERE (correo=? AND suspendido=0)", [usuario], function(err, rows) {
 				if (err) {
 					conexion.release();
 					next(err,false);

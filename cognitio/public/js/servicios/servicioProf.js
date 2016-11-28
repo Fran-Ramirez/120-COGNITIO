@@ -133,6 +133,12 @@ angular.module('mainApp').factory('servicioProf', ['$http','$q', function($http,
 		},
 		addEtiqueta : function(datos) {
 			return $http.post('/prof_panel/addEtiqueta', datos);
+		},
+		suspenderProfe : function(datos) {
+			return $http.post('/prof_panel/suspenderProfe', datos);
+		},
+		suspenderEstudiante : function(datos) {
+			return $http.post('/prof_panel/suspenderEstudiante', datos);
 		}
 	}
 }]);

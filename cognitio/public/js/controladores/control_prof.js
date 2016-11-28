@@ -32,7 +32,7 @@ angular.module('mainApp').controller('log_prof', ['$scope', '$location', 'servic
 	};
 }]);
 
-angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', 'servicioProf', function($scope,$location,servicioProf) {
+angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', 'servicioProf', '$route', 'ngDialog', function($scope,$location,servicioProf,$route, ngDialog) {
 	servicioProf.getTipo().then(function(res) {
 		if(res.data.exito == false) {
 			servicioProf.logout();
@@ -67,6 +67,66 @@ angular.module('mainApp').controller('profiles_profe', ['$scope', '$location', '
 			});
 		}
 	});
+	$scope.suspenderCta = function(tipo,accion,identificador) {
+		if(tipo==0) { //estudiante
+			var datos = {
+				funcion:accion,
+				rol:identificador
+			};
+			servicioProf.suspenderEstudiante(datos).then(function(res) {
+				if(res.data.exito==true) {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Usuario suspendido</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+					$route.reload();
+				}
+				else {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Algo salió mal</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+				}
+			});
+		}
+		else { //profesor
+			var datos = {
+				funcion:accion,
+				id:identificador
+			};
+			servicioProf.suspenderProfe(datos).then(function(res) {
+				if(res.data.exito==true) {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Usuario suspendido</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+					$route.reload();
+				}
+				else {
+					ngDialog.openConfirm({
+						template:'\
+							<p>Algo salió mal</p>\
+							<div class="ngdialog-buttons">\
+								<button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm(1)">Ok</button>\
+							</div>',
+						plain: true
+					});
+				}
+			});
+		}
+	};
 }]);
 
 angular.module('mainApp').controller('main_prof', ['$scope', '$location', 'servicioProf', function($scope,$location,servicioProf) {
